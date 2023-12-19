@@ -1,0 +1,271 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coversheet/view_student
+    Example context (json):
+    {
+
+    }
+}}
+
+<div class="w-100">
+    {{{html}}}
+</div>
+<div id="cmidContainer" data-cmid="{{cmid}}" style="display:none;"></div>
+<table class="table">
+    <tbody>
+        <tr>
+            <th scope="row" class="bg-gray">Student Name:</th>
+            <td>{{name}}</td>
+        </tr>
+        <tr>
+            <th scope="row" class="bg-gray">Email Address:</th>
+            <td>{{email}}</td>
+        </tr>
+        <tr>
+            <th scope="row" class="bg-gray">Telephone No:</th>
+            <td>{{phone}}</td>
+        </tr>
+    </tbody>
+</table>
+{{#infos}}
+        {{#isTextarea}}
+            <div class="textarea-container my-3 d-flex">
+                <label for="{{name}}">{{name}}:</label>
+                <textarea class="form-control textarea" id="" rows="3" data-name="{{name}}" data-id="{{id}}" data-datatype="{{datatype}}"></textarea>
+            </div>
+        {{/isTextarea}}
+        {{#isTextinput}}
+            <div class="textinput-container my-3 d-flex">
+                <label for="{{name}}">{{name}}:</label>
+                <input type="text" class="textinput ml-3" data-id="{{id}}" data-datatype="{{datatype}}">
+            </div>
+        {{/isTextinput}}
+        {{#isRadio}}
+            <div class="radio-container my-3 d-flex">
+                <label for="{{name}}" class="mr-3">{{name}}:</label>
+                {{#radioOptions}}
+                    <input type="radio" name="{{name}}" value="{{.}}" data-id="{{id}}" data-datatype="{{datatype}}" class="radioinput mr-1">
+                    <label for="{{name}}" class="mr-2">{{.}}</label>
+                {{/radioOptions}}
+            </div>
+        {{/isRadio}}
+        {{#isDropdown}}
+            <div class="dropdown-container my-3 d-flex">
+                <label for="{{name}}" class="mr-3 mt-2">{{name}}:</label>
+                <select class="custom-dropdown" id="{{name}}">
+                    {{#dropdownList}}
+                        <option value="{{.}}" class="dropdowninput" data-id="{{id}}" data-datatype="{{datatype}}">{{.}}</option>
+                    {{/dropdownList}}
+                </select>
+                <span class="custom-dropdown-arrow"></span>
+            </div>
+        {{/isDropdown}}
+        {{#isCheckbox}}
+            <div class="checkbox-container d-flex">
+                <input type="checkbox" data-name="{{name}}" data-id="{{id}}" data-datatype="{{datatype}}" class="checkbox mr-3">
+                <label for="{{name}}">{{name}}</label>
+            </div>
+        {{/isCheckbox}}
+{{/infos}}
+{{#results}}
+    <div id="results-section">
+        <div class="result-item"><span class="bold">Date: </span>{{date}}</div>
+        <div class="result-item"><span class="bold">Name: </span>{{candidate_name}}</div>
+        <label for="{{candidate_sign}}">My Signature</label>
+        <img src="{{candidate_sign}}" alt="teacher_sign" height="200px" width="500px" class="conclusion-image">
+    </div>
+{{/results}}
+{{^results}}
+<div class="d-flex mt-4">
+    <label for="nameInput" class="py-2">Enter Your Name:</label>
+    <input type="text" id="student_name" name="student_name" class="w-25 ml-2" />
+    <label for="nameInput" class="ml-5 py-2">Date:</label>
+    <input type="text" id="currentDate" value="{{currentDate}}" class="w-25 ml-2" readonly>
+</div>
+<label for="signatureInput" class="py-2">Your Signature:</label>
+
+    <div>
+        <canvas id="signature-pad" class="signature-canvas"></canvas>
+    </div>
+
+    <div class="d-flex mt-2 ml-5">
+        <div class="clear-btn">
+            <button type="button" id="clear"><span> Clear </span></button>
+        </div>
+        <div class="save-btn">
+            <button type="button" id="save"><span> Save </span></button>
+        </div>
+    </div>
+{{/results}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.5/signature_pad.min.js" integrity="sha512-kw/nRM/BMR2XGArXnOoxKOO5VBHLdITAW00aG8qK4zBzcLVZ4nzg7/oYCaoiwc8U9zrnsO9UHqpyljJ8+iqYiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    var canvas = document.getElementById("signature-pad");
+    function resizeCanvas() {
+        var ratio = Math.max(window.devicePixelRatio || 1, 1);
+        var newWidth = 600; // Set the desired width
+        var newHeight = 300; // Set the desired height
+
+        canvas.width = newWidth * ratio;
+        canvas.height = newHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+    }
+    window.onresize = resizeCanvas;
+    resizeCanvas();
+
+    var signaturePad = new SignaturePad(canvas, {
+        backgroundColor: "rgb(227,215,215)"
+    });
+
+    document.getElementById("clear").addEventListener("click", function(event){
+        event.preventDefault();
+        signaturePad.clear();
+    })
+
+    document.getElementById("save").addEventListener("click", function(event){
+        event.preventDefault();
+        var student_name = $("#student_name").val();
+        var cmid = $('#cmidContainer').data('cmid');
+        var date = $('#currentDate').val();
+        // var datatype = $('#datatype').data('datatype');
+        if (signaturePad.isEmpty()) {
+            alert("Please provide a signature first.");
+        }
+        else if (!student_name) {
+            alert("Please provide your name.");
+        }
+        else {
+            var checkvalue = 0;
+            var fieldid;
+            var datatype = '';
+            // var inputvalue;
+            // var textId;
+            // var textDataType;
+            var signatureData = signaturePad.toDataURL();
+            var textareaValue = $('.textarea').val();
+            var textareaId = $('.textarea').data('id');
+            var textareaDataType = $('.textarea').data('datatype');
+            var textDataArray = [];
+            // Radio Button Value
+            // var radioValue;
+            // var radioId;
+            // var radioDataType;
+            var radioDataArray = [];
+            // Dropdown variables.
+            var dropdownDataArray = [];
+            $('.textinput').each(function () {
+                var inputvalue = $(this).val();
+                var textId = $(this).data('id');
+                var textDataType = $(this).data('datatype');
+                var textData = {
+                    id: textId,
+                    datatype: textDataType,
+                    inputvalue: inputvalue
+                };
+
+                textDataArray.push(textData);
+            });
+
+            $('.checkbox').each(function () {
+                if ($(this).prop('checked')) {
+                    fieldid = $(this).data('id');
+                    datatype = $(this).data('datatype');
+                    checkvalue = 1;
+                }
+            });
+
+            $('.radioinput').each(function (){
+                if ($(this).is(':checked')) {
+                    var radioValue = $(this).val();
+                    var radioId = $(this).data('id');
+                    var radioDataType = $(this).data('datatype');
+
+                    var radioData = {
+                        id: radioId,
+                        datatype: radioDataType,
+                        value: radioValue
+                    };
+
+                    radioDataArray.push(radioData);
+                }
+            });
+            $('.dropdowninput').each(function () {
+                if ($(this).is(':selected')) {
+                var dropdownValue = $(this).val();
+                var dropdownId = $(this).data('id');
+                var dropdownDataType = $(this).data('datatype');
+
+                var dropdownData = {
+                    id: dropdownId,
+                    datatype: dropdownDataType,
+                    value: dropdownValue
+                };
+
+                dropdownDataArray.push(dropdownData);
+            }
+            });
+            // console.log(dropdownDataArray);
+            saveInfoData(cmid, fieldid, checkvalue, datatype, textareaValue, textareaId, textareaDataType,
+            textDataArray, radioDataArray, dropdownDataArray)
+            saveSignatureToDatabase(signatureData, student_name, cmid, date);
+            $("#clear, #save").hide();
+        }
+    });
+    function saveInfoData(cmid, fieldid, checkValue, datatype, textareaValue, textareaId, textareaDataType,
+                          textDataArray, radioDataArray, dropdownDataArray) {
+        $.ajax({
+            type: "POST",
+            url: "save_user_data.php", // Create a new PHP file for handling the saving logic
+            data: {
+                cmid: cmid,
+                fieldid: fieldid,
+                checkboxValue: checkValue,
+                datatype: datatype,
+                textareaValue: textareaValue,
+                textareaId: textareaId,
+                textareaDataType: textareaDataType,
+                textDataArray: textDataArray,
+                radioDataArray: radioDataArray,
+                dropdownDataArray: dropdownDataArray,
+                // textId: textId,
+                // inputvalue: inputvalue,
+                // textDataType: textDataType,
+            },
+            success: function() {
+                alert('Data Saved');
+            },
+            error: function() {
+                alert('Failed to insert data');
+            }
+        });
+    }
+    function saveSignatureToDatabase(signatureData, student_name, cmid, date) {
+        $.ajax({
+            type: "POST",
+            url: "save_signature.php", // Create a new PHP file for handling the saving logic
+            data: {
+                signatureData: signatureData,
+                studentName: student_name,
+                cmid: cmid,
+                date: date
+            },
+            success: function(response) {
+                alert(response);
+            },
+            error: function() {
+                alert('Failed to insert data');
+            }
+        });
+    }
+</script>

@@ -1,0 +1,342 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coversheet/user_information
+    Example context (json):
+    {
+
+    }
+}}
+<div id="cmidContainer" data-cmid="{{cmid}}" style="display:none;"></div>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Create a new user information
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" data-toggle="modal" data-target="#checkboxModal">Checkbox</a>
+        <a class="dropdown-item" data-toggle="modal" data-target="#dropdownModal">Drop-down menu</a>
+        <a class="dropdown-item" data-toggle="modal" data-target="#radioModal">Radio Button</a>
+        <a class="dropdown-item" data-toggle="modal" data-target="#textareaModal">Textarea</a>
+        <a class="dropdown-item" data-toggle="modal" data-target="#textModal">Text input</a>
+    </div>
+    <a href="/mod/coversheet/view.php?id={{cmid}}" class="btn btn-outline-info ml-2">Back</a>
+</div>
+<table class="table mt-5">
+    <thead>
+    <tr>
+        <th scope="col">Profile Field</th>
+        <th scope="col">Profile Field Type</th>
+        <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#details}}
+    <tr>
+        <td>{{name}}</td>
+        <td>{{datatype}}</td>
+        <td class="d-flex justify-content-start">
+            <a href="update_profile.php?id={{id}}&cmid={{cmid}}&datatype={{datatype}}&action=edit" class="btn text-info" title="Edit">
+                <svg width="28" height="28" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path
+                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd"
+                          d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                </svg>
+            </a>
+            <a href="update_profile.php?id={{id}}&cmid={{cmid}}&datatype={{datatype}}&action=delete" class="btn text-danger" title="Delete">
+                <svg width="28" height="28" fill="currentColor" class="bi bi-calendar2-x" viewBox="0 0 16 16">
+                    <path
+                            d="M6.146 8.146a.5.5 0 0 1 .708 0L8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 0 1 0-.708z" />
+                    <path
+                            d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z" />
+                    <path d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5V4z" />
+                </svg>
+            </a>
+
+        </td>
+    </tr>
+    {{/details}}
+    </tbody>
+</table>
+
+<!--Modal for checkbox.-->
+<div class="modal" id="checkboxModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Creating a new 'Checkbox' profile field</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Add your form fields here for user input -->
+                <form id="checkboxForm">
+                    <!-- Your form fields go here -->
+                    <label for="fieldName">Short name (must be unique)</label>
+                    <input type="text" id="shortname" name="shortname" class="form-control" required>
+                    <label for="fieldName">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal for radio.-->
+<div class="modal" id="radioModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Creating a new 'Radio' profile field</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Add your form fields here for user input -->
+                <form id="radioForm">
+                    <!-- Your form fields go here -->
+                    <label for="fieldName">Short name (must be unique)</label>
+                    <input type="text" id="shortname_radio" name="shortname_radio" class="form-control" required>
+                    <label for="fieldName">Name</label>
+                    <input type="text" id="name_radio" name="name_radio" class="form-control" required>
+                    <label for="radioOptions">Enter radio button options (Separated With Comma)</label>
+                    <input type="text" id="radioOptions" name="radioOptions" class="form-control" required>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal for textarea-->
+<div class="modal" id="textareaModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Creating a new 'Textarea' profile field</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Add your form fields here for user input -->
+                <form id="textareaForm">
+                    <!-- Your form fields go here -->
+                    <label for="fieldName">Short name (must be unique)</label>
+                    <input type="text" id="shortname_textarea" name="shortname_textarea" class="form-control" required>
+                    <label for="fieldName">Name</label>
+                    <input type="text" id="name_textarea" name="name_textarea" class="form-control" required>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal for text input-->
+<div class="modal" id="textModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Creating a new 'Text input' profile field</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Add your form fields here for user input -->
+                <form id="textForm">
+                    <!-- Your form fields go here -->
+                    <label for="fieldName">Short name (must be unique)</label>
+                    <input type="text" id="shortname_text" name="shortname_text" class="form-control" required>
+                    <label for="fieldName">Name</label>
+                    <input type="text" id="name_text" name="name_text" class="form-control" required>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Modal for dropdown-->
+<div class="modal" id="dropdownModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Creating a new 'Dropdown' profile field</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <!-- Add your form fields here for user input -->
+                <form id="dropdownForm">
+                    <!-- Your form fields go here -->
+                    <label for="fieldName">Short name (must be unique)</label>
+                    <input type="text" id="shortname_dropdown" name="shortname_dropdown" class="form-control" required>
+                    <label for="fieldName">Name</label>
+                    <input type="text" id="name_dropdown" name="name_dropdown" class="form-control" required>
+                    <label for="dropdownList">Enter dropdown options (Separated With Comma)</label>
+                    <input type="text" id="dropdownList" name="dropdownList" class="form-control" required>
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('checkboxForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var cmid = $('#cmidContainer').data('cmid');
+        var shortname = $('#shortname').val();
+        var name = $('#name').val();
+        var action = 'checkbox';
+
+        $.ajax({
+            type: 'POST',
+            url: 'save_user_info.php',
+            data: {
+                cmid: cmid,
+                shortname: shortname,
+                name: name,
+                action: action
+            },
+            success: function(response) {
+                $('#checkboxModal').modal('hide');
+                alert('Data inserted successfully');
+            },
+            error: function(error) {
+                alert('Failed to insert data');
+            }
+        });
+    });
+    document.getElementById('radioForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var cmid = $('#cmidContainer').data('cmid');
+        var shortname = $('#shortname_radio').val();
+        var name = $('#name_radio').val();
+        var radioOptions = $('#radioOptions').val().split(',');
+        var action = 'radio';
+        console.log(radioOptions);
+
+        $.ajax({
+            type: 'POST',
+            url: 'save_user_info.php',
+            data: {
+                cmid: cmid,
+                shortname: shortname,
+                name: name,
+                action: action,
+                radioOptions: radioOptions
+            },
+            success: function(response) {
+                $('#radioModal').modal('hide');
+                alert('Data inserted successfully');
+            },
+            error: function(error) {
+                alert('Failed to insert data');
+            }
+        });
+    });
+    document.getElementById('textareaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var cmid = $('#cmidContainer').data('cmid');
+        var shortname = $('#shortname_textarea').val();
+        var name = $('#name_textarea').val();
+        var action = 'textarea';
+
+        $.ajax({
+            type: 'POST',
+            url: 'save_user_info.php',
+            data: {
+                cmid: cmid,
+                shortname: shortname,
+                name: name,
+                action: action
+            },
+            success: function(response) {
+                $('#textareaModal').modal('hide');
+                // alert('Data inserted successfully');
+            },
+            error: function(error) {
+                alert('Failed to insert data');
+            }
+        });
+    });
+    document.getElementById('textForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var cmid = $('#cmidContainer').data('cmid');
+        var shortname = $('#shortname_text').val();
+        var name = $('#name_text').val();
+        var action = 'text';
+
+        $.ajax({
+            type: 'POST',
+            url: 'save_user_info.php',
+            data: {
+                cmid: cmid,
+                shortname: shortname,
+                name: name,
+                action: action
+            },
+            success: function(response) {
+                $('#textModal').modal('hide');
+                // alert('Data inserted successfully');
+            },
+            error: function(error) {
+                alert('Failed to insert data');
+            }
+        });
+    });
+    document.getElementById('dropdownForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var cmid = $('#cmidContainer').data('cmid');
+        var shortname = $('#shortname_dropdown').val();
+        var name = $('#name_dropdown').val();
+        var dropdownList = $('#dropdownList').val().split(',');
+        var action = 'dropdown';
+
+        $.ajax({
+            type: 'POST',
+            url: 'save_user_info.php',
+            data: {
+                cmid: cmid,
+                shortname: shortname,
+                name: name,
+                action: action,
+                dropdownList: dropdownList
+            },
+            success: function(response) {
+                $('#dropdownModal').modal('hide');
+            },
+            error: function(error) {
+                alert('Failed to insert data');
+            }
+        });
+    });
+</script>

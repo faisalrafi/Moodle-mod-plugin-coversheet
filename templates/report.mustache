@@ -1,0 +1,166 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coversheet/report
+    Example context (json):
+    {
+
+    }
+}}
+<a href="/mod/coversheet/view.php?id={{cmid}}" class="btn btn-danger mb-2">
+Back
+</a>
+<div id="cmidContainer" data-cmid="{{cmid}}" style="display:none;"></div>
+<div id="stu_id" data-studentid="{{studentid}}" style="display:none;"></div>
+<div class="report-body">
+    {{#contents}}
+        {{{html}}}
+    {{/contents}}
+    <h3 class="report-heading">Resource Requirements</h3>
+    <ul class="resource-list">
+        {{#resources}}
+            <li class="list-design">
+                <label for="resource">{{resource}}</label>
+                <input type="checkbox" id="resource-check" class="resource-checkbox ml-5" data-resource="{{resource}}" data-id="{{id}}">
+            </li>
+        {{/resources}}
+    </ul>
+    <hr>
+    <h3 class="report-heading">Feedback</h3>
+    <label for="overallResult">Overall Result:</label>
+    <input type="text" id="overallResult" name="overallResult" class="feedback-area">
+    <label for="comments">Comments:</label>
+    <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
+    <div class="d-flex">
+        <label>Satisfactory:</label>
+        <input type="checkbox" id="satisfactoryCheckbox" name="satisfactoryCheckbox" class="ml-3">
+    </div>
+    <div class="d-flex">
+        <label>Not Satisfactory:</label>
+        <input type="checkbox" id="notSatisfactoryCheckbox" name="notSatisfactoryCheckbox" class="ml-3">
+    </div>
+    <hr>
+    <h3 class="report-heading">Conclusion</h3>
+    <div class="d-flex justify-content-between">
+        {{#feedbacks}}
+            <div class="mt-2">
+                <h6 class="conclusion-heading">Teacher's Name:</h6><p class="bold">{{assessor_name}}</p>
+                <h6 class="conclusion-heading">Teacher's Signature:</h6>
+                <img src="{{assessor_sign}}" alt="teacher_sign" height="200px" width="500px" class="conclusion-image">
+            </div>
+        {{/feedbacks}}
+        {{^feedbacks}}
+        <div class="mt-2">
+            <label for="nameInput" class="">Enter Your Name:</label>
+            <input type="text" id="teacher_name" name="teacher_name" class="w-25 mb-2" />
+            <label for="nameInput" class="">Date:</label>
+            <input type="text" id="currentDate" value="{{currentDate}}" class="w-50" readonly>
+            <label for="signatureInput" class="py-2">Your Signature:</label>
+            <div>
+                <canvas id="signature-pad" class="signature-canvas"></canvas>
+            </div>
+            <div class="d-flex mt-2 ml-5">
+                <div class="clear-btn">
+                    <button type="button" id="clear"><span> Clear </span></button>
+                </div>
+                <div class="save-btn">
+                    <button type="button" id="save"><span> Save </span></button>
+                </div>
+            </div>
+        </div>
+        {{/feedbacks}}
+        <div class="mt-2">
+            <h6 class="conclusion-heading">Student's Name:</h6><p class="bold">{{student_name}}</p>
+            <h6 class="conclusion-heading">Student's Signature:</h6>
+            <img src="{{student_sign}}" alt="student_sign" height="200px" width="500px" class="conclusion-image">
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.5/signature_pad.min.js" integrity="sha512-kw/nRM/BMR2XGArXnOoxKOO5VBHLdITAW00aG8qK4zBzcLVZ4nzg7/oYCaoiwc8U9zrnsO9UHqpyljJ8+iqYiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Include jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script>
+    var canvas = document.getElementById("signature-pad");
+    function resizeCanvas() {
+        var ratio = Math.max(window.devicePixelRatio || 1, 1);
+        var newWidth = 500;
+        var newHeight = 250;
+
+        canvas.width = newWidth * ratio;
+        canvas.height = newHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
+    }
+    window.onresize = resizeCanvas;
+    resizeCanvas();
+
+    var signaturePad = new SignaturePad(canvas, {
+        backgroundColor: "rgb(227,215,215)"
+    });
+
+    document.getElementById("clear").addEventListener("click", function(event){
+        event.preventDefault();
+        signaturePad.clear();
+    })
+
+    document.getElementById("save").addEventListener("click", function(event){
+        event.preventDefault();
+        var overall_result = $("#overallResult").val();
+        var comment = $("#comments").val();
+        var isSatisfactory = $("#satisfactoryCheckbox").is(":checked") ? 1 : 0;
+        var teacher_name = $("#teacher_name").val();
+        var cmid = $('#cmidContainer').data('cmid');
+        var studentid = $('#stu_id').data('studentid');
+
+        if (signaturePad.isEmpty()) {
+            alert("Please provide a signature first.");
+        }
+        else if (!teacher_name) {
+            alert("Please provide your name.");
+        }
+        else {
+            var signatureData = signaturePad.toDataURL();
+            var checkedResources = [];
+            $('.resource-checkbox:checked').each(function() {
+                var resourceid = $(this).data('id');
+                checkedResources.push(resourceid);
+            });
+            // console.log(checkedResources);
+            saveFeedback(overall_result, comment, isSatisfactory, signatureData, teacher_name, cmid, studentid, checkedResources);
+            $("#clear, #save").hide();
+        }
+    });
+
+    function saveFeedback(overall_result, comment, isSatisfactory, signatureData, teacher_name, cmid, studentid, checkedResources) {
+        $.ajax({
+            type: "POST",
+            url: "save_feedback.php", // Create a new PHP file for handling the saving logic
+            data: {
+                overall_result: overall_result,
+                comment: comment,
+                isSatisfactory: isSatisfactory,
+                signatureData: signatureData,
+                teacherName: teacher_name,
+                cmid: cmid,
+                studentid: studentid,
+                checkedResources: checkedResources
+            },
+            success: function(response) {
+                alert(response);
+            },
+            error: function() {
+                alert('Failed to insert data');
+            }
+        });
+    }
+</script>

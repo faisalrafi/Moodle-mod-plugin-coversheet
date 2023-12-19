@@ -1,0 +1,238 @@
+.add-content {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #c0c24a;
+    color: #fff;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.add-content:hover {
+    background-color: #a0a12d;
+    color: #fff;
+}
+
+.add-user-information {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #27ae60;
+    color: #fff;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.add-user-information:hover {
+    background-color: #218c54;
+    color: #fff;
+}
+
+.add-resource {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #d25159;
+    color: #fff;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.add-resource:hover {
+    background-color: #9d434d;
+    color: #fff;
+}
+
+.report {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    background-color: #c0c24a;
+    color: #fff;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.report:hover {
+    background-color: #8c8d30;
+    color: #fff;
+}
+
+/*.resource-heading {}*/
+
+.resource-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.list-design {
+    background-color: #fff;
+    display: flex;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.resource-checkbox {
+    font-size: 10px;
+}
+
+
+/*.list-design:hover {*/
+/*    background-color: #83c4dc;*/
+/*}*/
+
+.report-body {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+.report-heading {
+    background-color: #96d9d9;
+    border: 1px solid black;
+    border-radius: 8px 20px;
+    padding: 10px;
+    margin-bottom: 20px !important;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/*input {*/
+/*    width: 100%;*/
+/*    padding: 8px;*/
+/*    box-sizing: border-box;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+.signature-canvas {
+    background: #ecd9d9 !important;
+    width: 50%;
+    height: 50%;
+    cursor: crosshair;
+    border: 1px solid black;
+}
+
+.clear-btn {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#clear {
+    background-color: #ff4b4b;
+    border: 1px solid #ff4b4b;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+#clear:hover {
+    background-color: #d91212;
+    border: 1px solid #3f0000;
+}
+
+.save-btn button {
+    background-color: #486c09;
+    border: 1px solid #2c4205;
+    color: #fff;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.save-btn button:hover {
+    background-color: #205e0c;
+    border: 1px solid #3f0000;
+}
+
+.student-link {
+    display: inline-block;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.student-link:hover {
+    background-color: #2980b9;
+    color: #fff;
+}
+
+.feedback-area {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.conclusion-heading {
+    font-size: 18px;
+    color: transparent;
+    margin-bottom: 5px;
+    background-image: linear-gradient(to right, #553c9a 75%, #ee4b2b);
+    -webkit-background-clip: text;
+}
+
+.conclusion-image {
+    border: 1px solid #ccc; /* Add a border for a clean look */
+    border-radius: 5px; /* Add border-radius for rounded corners */
+    box-shadow: 5px 10px 18px rgba(70, 60, 60, 0.1); /* Add a subtle box shadow */
+    margin-top: 8px;
+}
+
+.custom-dropdown {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Style for the selected option */
+/*.custom-dropdown option:checked {*/
+/*    background-color: #3498db !important;*/
+/*    color: #fff;*/
+/*}*/
+
+.custom-dropdown-arrow {
+    position: relative;
+}
+
+#results-section {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+/* Style for individual result items */
+.result-item {
+    margin-bottom: 8px;
+}

@@ -1,0 +1,53 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coversheet/view
+    Example context (json):
+    {
+
+    }
+}}
+
+<div class="text-center">
+    <a href="/mod/coversheet/adminpages/add_content.php?id={{cmid}}" class="btn add-content">Add Content</a>
+<!--    <a href="/mod/coversheet/adminpages/add_submission.php?id={{cmid}}" class="btn add-submission">Add Submission Details</a>-->
+    <a href="/mod/coversheet/adminpages/user_information.php?id={{cmid}}" class="btn add-user-information">Add User Information</a>
+    <a href="/mod/coversheet/adminpages/add_resource.php?id={{cmid}}" class="btn add-resource">Add Resource Requirements</a>
+<!--    <a href="/mod/coversheet/adminpages/report.php?id={{cmid}}" class="btn report">Report</a>-->
+</div>
+
+<h5 class="mt-4">Student Submissions:</h5>
+{{#details}}
+    <a href="/mod/coversheet/adminpages/report.php?id={{cmid}}&studentid={{student_id}}" class=" btn student-link">
+        {{candidate_name}}
+    </a>
+    <br>
+{{/details}}
+<!--<h5>Candidate Response: Assessment task: Research Task</h5>-->
+<!--<table class="table">-->
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--        <th scope="row" class="bg-gray">Submission Date:</th>-->
+<!--        <td>{{submission_date}}</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th scope="row" class="bg-gray">Candidate Name</th>-->
+<!--        <td>{{candidate_name}}</td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <th scope="row" class="bg-gray">Units of Competency</th>-->
+<!--        <td>{{competency}}</td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
