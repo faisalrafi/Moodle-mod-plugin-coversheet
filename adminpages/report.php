@@ -59,7 +59,18 @@ $resources = $DB->get_records_sql($resource_query);
 $feedback_query = "SELECT assessor_name, assessor_sign FROM {coversheet_feedbacks} cf 
                    WHERE cf.cmid= '$id' AND cf.student_id = '$studentid'";
 $feedback = $DB->get_records_sql($feedback_query);
-//var_dump($feedback); die();
+
+$query = "SELECT cft.name, cfd.value, cft.datatype FROM {coversheet_field_type} cft
+          LEFT JOIN {coversheet_field_data} cfd ON cft.id = cfd.fieldid
+          WHERE cft.cmid = :cmid AND cfd.student_id = :studentid";
+$datas = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid]);
+//echo "<pre>";var_dump($datas); die();
+foreach ($datas as $data) {
+    $data->datatype = ($data->datatype === 'checkbox');
+    $data->isCheckbox = ($data->datatype === 'checkbox');
+    $data->isChecked = ($data->datatype === 'checkbox' && $data->value == 1);
+}
+
 
 $currentdate = date('d F Y');
 
@@ -67,6 +78,7 @@ $display = [
     'contents' => array_values($contents),
     'resources' => array_values($resources),
     'feedbacks' => array_values($feedback),
+    'datas' => array_values($datas),
     'cmid' => $id,
     'studentid' => $studentid,
     'currentDate' => $currentdate,

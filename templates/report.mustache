@@ -51,6 +51,22 @@ Back
         <input type="checkbox" id="notSatisfactoryCheckbox" name="notSatisfactoryCheckbox" class="ml-3">
     </div>
     <hr>
+    <h3 class="report-heading">Student Extra Information</h3>
+    {{#datas}}
+        {{#datatype}}
+            <div class="d-flex">
+                <label for="">{{name}}:</label>
+                <input type="checkbox" name="{{name}}" value="{{value}}" checked class="ml-1">
+            </div>
+        {{/datatype}}
+        {{^datatype}}
+        <div class="d-flex">
+            <label for="">{{name}}:</label>
+            <p class="ml-1">{{value}}</p>
+        </div>
+        {{/datatype}}
+    {{/datas}}
+    <hr>
     <h3 class="report-heading">Conclusion</h3>
     <div class="d-flex justify-content-between">
         {{#feedbacks}}

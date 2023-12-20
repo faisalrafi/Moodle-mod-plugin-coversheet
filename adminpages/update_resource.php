@@ -15,27 +15,66 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * update resource checkbox of mod_coversheet.
+ * update resource of mod_coversheet.
  *
  * @package    mod_coversheet
  * @copyright  2023, Brain Station-23 Ltd.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-global $CFG, $USER, $DB;
+global $CFG, $USER, $DB, $PAGE, $OUTPUT;
 require_once('../../../config.php');
-require_once($CFG->libdir . '/gradelib.php');
+require_once($CFG->libdir . '/formslib.php');
 
-$resource = $_POST['resource'];
-$isChecked = $_POST['isChecked'];
-$studentid = $_POST['studentid'];
+$id = required_param('id', PARAM_INT);
+$cmid = required_param('cmid', PARAM_INT);
+$action = required_param('action', PARAM_ALPHA);
 
-$data = new stdClass();
-$data->status = $isChecked ? 1:0;
-$data->studentid = $studentid;
+require_login();
 
-$res = $DB->update_record('coversheet_requirements', $data, ['resource' => $resource]);
+$PAGE->set_url('/mod/coversheet/adminpages/update_resource.php', array('id' => $id, 'cmid' => $cmid, 'action' => $action));
+$PAGE->set_context(context_system::instance());
+$PAGE->set_title("Update Resource");
+$PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
-if($res) {
-    echo 'Success';
+$redirect_url = new moodle_url('/mod/coversheet/adminpages/resource_list.php', ['id' => $cmid]);
+
+class edit_resource_form extends moodleform {
+    protected function definition() {
+        $mform = $this->_form;
+
+        $mform->addElement('text', 'resource', 'Resource', array('size' => '100%'));
+        $mform->setType('resource', PARAM_TEXT);
+
+        $this->add_action_buttons('Cancel', 'Update Resource');
+    }
 }
+
+if($action === 'delete') {
+    $fields = $DB->get_record('coversheet_requirements', ['id' => $id]);
+//    var_dump($fields); die();
+    $DB->delete_records('coversheet_reqcheck', ['reqid' => $fields->id]);
+    $DB->delete_records('coversheet_requirements', ['id' => $id]);
+    redirect(($redirect_url), 'Successfully Deleted the resource');
+}
+else {
+    $form = new edit_resource_form(new moodle_url('/mod/coversheet/adminpages/update_resource.php', array('id' => $id, 'cmid' => $cmid, 'action' => $action)));
+    $fieldData = $DB->get_record('coversheet_requirements', ['id' => $id]);
+    $form->set_data($fieldData);
+
+    if ($form->is_cancelled()) {
+        redirect($redirect_url,'Cancelled the form');
+    } elseif ($data = $form->get_data()) {
+        $resource = new stdClass();
+        $resource->id = $id;
+        $resource->resource = $data->resource;
+        $resource->timemodified = time();
+
+        $DB->update_record('coversheet_requirements', $resource);
+        redirect($redirect_url, 'Resource Updated');
+    }
+}
+echo $OUTPUT->header();
+$form->display();
+
+echo $OUTPUT->footer();

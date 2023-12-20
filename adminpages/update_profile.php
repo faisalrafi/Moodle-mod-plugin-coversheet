@@ -25,12 +25,13 @@
 global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 require_once('../../../config.php');
 require_once($CFG->libdir . '/formslib.php');
-//require_once($CFG->dirroot . '/mod/coversheet/adminpages/update_profile.php');
 
 $id = required_param('id', PARAM_INT);
 $cmid = required_param('cmid', PARAM_INT);
 $datatype= required_param('datatype', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);
+
+require_login();
 
 $PAGE->set_url('/mod/coversheet/adminpages/update_profile.php', ['id' => $id, 'cmid' => $cmid, 'datatype' => $datatype, 'action' => $action]);
 $PAGE->set_context(context_system::instance());

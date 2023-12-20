@@ -61,7 +61,7 @@ if ($mform->is_cancelled()) {
 }
 elseif ($data = $mform->get_data()) {
     $phase_id = coversheet_insert_content($data, $context, $id);
-    redirect(new moodle_url('/mod/coversheet/view.php', array('id' => $id)));
+    redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)));
 }
 $mform->display();
 echo "<a href='/mod/coversheet/adminpages/content_list.php?id=$id' class='btn btn-md btn-outline-info mt-4'>Content List</a>";

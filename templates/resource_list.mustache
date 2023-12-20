@@ -23,8 +23,15 @@
 <ul class="resource-list">
     {{#resources}}
         <li class="list-design">{{resource}}</li>
+        <a href="update_resource.php?id={{id}}&cmid={{cmid}}&action=edit" class="btn btn-sm btn-info mb-2 border-radius">Edit</a>
+        <a href="update_resource.php?id={{id}}&cmid={{cmid}}&action=delete" class="btn btn-sm btn-danger mb-2 border-radius">Delete</a>
     {{/resources}}
 </ul>
-<div class="text-center">
-    <a href="/mod/coversheet/adminpages/add_resource.php?id={{cmid}}" class="btn btn-md btn-outline-dark">Back</a>
+<div class="d-flex justify-content-center">
+    <div class="">
+        <a href="/mod/coversheet/adminpages/add_resource.php?id={{cmid}}" class="btn btn-md btn-outline-primary">Add More Resource Requirements</a>
+    </div>
+    <div class="ml-2">
+        <a href="/mod/coversheet/view.php?id={{cmid}}" class="btn btn-md btn-outline-danger">Back To Main Page</a>
+    </div>
 </div>

@@ -50,7 +50,7 @@ if ($form->is_cancelled()) {
 
     $DB->insert_record('coversheet_requirements', $record);
 
-    redirect(new moodle_url('/mod/coversheet/adminpages/add_resource.php', array('id' => $cmid)), 'Resource added successfully, check the resource list.');
+    redirect(new moodle_url('/mod/coversheet/adminpages/resource_list.php', array('id' => $cmid)), 'Resource added successfully, check the resource list.');
 
 }
 
