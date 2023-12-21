@@ -30,7 +30,7 @@
         <a class="dropdown-item" data-toggle="modal" data-target="#textareaModal">Textarea</a>
         <a class="dropdown-item" data-toggle="modal" data-target="#textModal">Text input</a>
     </div>
-    <a href="/mod/coversheet/view.php?id={{cmid}}" class="btn btn-outline-info ml-2">Back</a>
+    <a href="/mod/coversheet/view.php?id={{cmid}}" class="btn btn-outline-info ml-2">Back To Main Page</a>
 </div>
 <table class="table mt-5">
     <thead>
@@ -88,6 +88,11 @@
                     <input type="text" id="shortname" name="shortname" class="form-control" required>
                     <label for="fieldName">Name</label>
                     <input type="text" id="name" name="name" class="form-control" required>
+                    <label for="require">Is this field required?</label>
+                    <select id="requireCheckbox" name="require" class="form-control " required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
@@ -116,6 +121,11 @@
                     <input type="text" id="name_radio" name="name_radio" class="form-control" required>
                     <label for="radioOptions">Enter radio button options (Separated With Comma)</label>
                     <input type="text" id="radioOptions" name="radioOptions" class="form-control" required>
+                    <label for="require">Is this field required?</label>
+                    <select id="requireRadio" name="require" class="form-control require" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
@@ -142,6 +152,11 @@
                     <input type="text" id="shortname_textarea" name="shortname_textarea" class="form-control" required>
                     <label for="fieldName">Name</label>
                     <input type="text" id="name_textarea" name="name_textarea" class="form-control" required>
+                    <label for="require">Is this field required?</label>
+                    <select id="requireTextarea" name="require" class="form-control " required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
@@ -168,6 +183,11 @@
                     <input type="text" id="shortname_text" name="shortname_text" class="form-control" required>
                     <label for="fieldName">Name</label>
                     <input type="text" id="name_text" name="name_text" class="form-control" required>
+                    <label for="require">Is this field required?</label>
+                    <select id="requireText" name="require" class="form-control require" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
@@ -196,6 +216,11 @@
                     <input type="text" id="name_dropdown" name="name_dropdown" class="form-control" required>
                     <label for="dropdownList">Enter dropdown options (Separated With Comma)</label>
                     <input type="text" id="dropdownList" name="dropdownList" class="form-control" required>
+                    <label for="require">Is this field required?</label>
+                    <select id="requireDropdown" name="require" class="form-control " required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
                     <!-- Submit button -->
                     <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </form>
@@ -211,7 +236,9 @@
         var cmid = $('#cmidContainer').data('cmid');
         var shortname = $('#shortname').val();
         var name = $('#name').val();
+        var requireCheckbox = $('#requireCheckbox').val();
         var action = 'checkbox';
+        // console.log(requireCheckbox);
 
         $.ajax({
             type: 'POST',
@@ -220,11 +247,13 @@
                 cmid: cmid,
                 shortname: shortname,
                 name: name,
+                requireCheckbox: requireCheckbox,
                 action: action
             },
             success: function(response) {
+                location.reload();
                 $('#checkboxModal').modal('hide');
-                alert('Data inserted successfully');
+                // alert('Data inserted successfully');
             },
             error: function(error) {
                 alert('Failed to insert data');
@@ -233,13 +262,13 @@
     });
     document.getElementById('radioForm').addEventListener('submit', function(event) {
         event.preventDefault();
-
         var cmid = $('#cmidContainer').data('cmid');
         var shortname = $('#shortname_radio').val();
         var name = $('#name_radio').val();
+        var requireRadio = $('#requireRadio').val();
         var radioOptions = $('#radioOptions').val().split(',');
         var action = 'radio';
-        console.log(radioOptions);
+        console.log(requireRadio);
 
         $.ajax({
             type: 'POST',
@@ -248,12 +277,14 @@
                 cmid: cmid,
                 shortname: shortname,
                 name: name,
+                requireRadio: requireRadio,
                 action: action,
                 radioOptions: radioOptions
             },
             success: function(response) {
+                location.reload();
                 $('#radioModal').modal('hide');
-                alert('Data inserted successfully');
+                // alert('Data inserted successfully');
             },
             error: function(error) {
                 alert('Failed to insert data');
@@ -266,6 +297,7 @@
         var cmid = $('#cmidContainer').data('cmid');
         var shortname = $('#shortname_textarea').val();
         var name = $('#name_textarea').val();
+        var requireTextarea = $('#requireTextarea').val();
         var action = 'textarea';
 
         $.ajax({
@@ -275,9 +307,11 @@
                 cmid: cmid,
                 shortname: shortname,
                 name: name,
+                requireTextarea: requireTextarea,
                 action: action
             },
             success: function(response) {
+                location.reload();
                 $('#textareaModal').modal('hide');
                 // alert('Data inserted successfully');
             },
@@ -292,6 +326,7 @@
         var cmid = $('#cmidContainer').data('cmid');
         var shortname = $('#shortname_text').val();
         var name = $('#name_text').val();
+        var requireText = $('#requireText').val();
         var action = 'text';
 
         $.ajax({
@@ -301,9 +336,11 @@
                 cmid: cmid,
                 shortname: shortname,
                 name: name,
+                requireText: requireText,
                 action: action
             },
             success: function(response) {
+                location.reload();
                 $('#textModal').modal('hide');
                 // alert('Data inserted successfully');
             },
@@ -318,6 +355,7 @@
         var cmid = $('#cmidContainer').data('cmid');
         var shortname = $('#shortname_dropdown').val();
         var name = $('#name_dropdown').val();
+        var requireDropdown = $('#requireDropdown').val();
         var dropdownList = $('#dropdownList').val().split(',');
         var action = 'dropdown';
 
@@ -328,10 +366,12 @@
                 cmid: cmid,
                 shortname: shortname,
                 name: name,
+                requireDropdown: requireDropdown,
                 action: action,
                 dropdownList: dropdownList
             },
             success: function(response) {
+                location.reload();
                 $('#dropdownModal').modal('hide');
             },
             error: function(error) {

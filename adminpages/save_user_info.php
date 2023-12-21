@@ -28,6 +28,12 @@ require_once('../../../config.php');
 $cmid = $_POST['cmid'];
 $shortname = $_POST['shortname'];
 $name = $_POST['name'];
+$requireCheckbox = $_POST['requireCheckbox'];
+$requireRadio = $_POST['requireRadio'];
+$requireTextarea = $_POST['requireTextarea'];
+$requireText = $_POST['requireText'];
+$requireDropdown = $_POST['requireDropdown'];
+
 $options = $_POST['radioOptions'];
 $dropdownList = $_POST['dropdownList'];
 $action = $_POST['action'];
@@ -42,26 +48,31 @@ switch ($action) {
     case 'checkbox':
         $data->datatype = 'checkbox';
         $data->param = '';
+        $data->required = $requireCheckbox;
         break;
     case 'dropdown':
         $data->datatype = 'dropdown';
         $optionsString = implode(',', $dropdownList);
         $data->param = $optionsString;
+        $data->required = $requireDropdown;
 //        $data->param = json_encode($dropdownList);
         break;
     case 'radio':
         $data->datatype = 'radio';
         $optionsString = implode(',', $options);
         $data->param = $optionsString;
+        $data->required = $requireRadio;
 //        $data->param = json_encode($options);
         break;
     case 'textarea':
         $data->datatype = 'textarea';
         $data->param = '';
+        $data->required = $requireTextarea;
         break;
     case 'text':
         $data->datatype = 'text';
         $data->param = '';
+        $data->required = $requireText;
         break;
     default:
         // Handle other cases or set a default value

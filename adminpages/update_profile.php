@@ -28,7 +28,7 @@ require_once($CFG->libdir . '/formslib.php');
 
 $id = required_param('id', PARAM_INT);
 $cmid = required_param('cmid', PARAM_INT);
-$datatype= required_param('datatype', PARAM_ALPHA);
+$datatype = required_param('datatype', PARAM_ALPHA);
 $action = optional_param('action', '', PARAM_ALPHA);
 
 require_login();

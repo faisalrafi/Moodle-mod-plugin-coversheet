@@ -106,6 +106,7 @@
                 <FIELD NAME="shortname" TYPE="text" NOTNULL="false" UNSIGNED="true" COMMENT="" SEQUENCE="false" />
                 <FIELD NAME="datatype" TYPE="char" LENGTH="255" NOTNULL="false" UNSIGNED="true" COMMENT="" SEQUENCE="false" />
                 <FIELD NAME="param" TYPE="text" NOTNULL="false" UNSIGNED="true" COMMENT="" SEQUENCE="false" />
+                <FIELD NAME="required" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="if the field required or not" SEQUENCE="false" />
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
             </FIELDS>
             <KEYS>

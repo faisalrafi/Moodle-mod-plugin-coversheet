@@ -71,7 +71,6 @@ foreach ($datas as $data) {
     $data->isChecked = ($data->datatype === 'checkbox' && $data->value == 1);
 }
 
-
 $currentdate = date('d F Y');
 
 $display = [

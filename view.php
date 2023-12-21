@@ -80,15 +80,18 @@ if ($hasCapabilityViewPage) {
     $phone = $info->phone1;
     $currentdate = date('d F Y');
 
-    $sql = "SELECT ft.id, ft.name, ft.datatype, ft.param
+    $sql = "SELECT ft.id, ft.name, ft.datatype, ft.param, ft.required
             FROM {coversheet_field_type} ft WHERE ft.cmid = '$id'";
     $info = $DB->get_records_sql($sql);
-//    var_dump($info);die();
+//    echo "<pre>";var_dump($info);die();
     foreach ($info as $field) {
         $field->isCheckbox = ($field->datatype === 'checkbox');
         $field->isTextarea = ($field->datatype === 'textarea');
         $field->isTextinput = ($field->datatype === 'text');
         $field->isRadio = ($field->datatype === 'radio');
+
+        $field->isRequired = ($field->required == 1);
+
         if ($field->isRadio) {
             $field->radioOptions = explode(',', $field->param);
         }

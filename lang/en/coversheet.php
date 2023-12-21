@@ -31,3 +31,8 @@ $string['schedule:view'] = 'View Coversheet information';
 $string['pageinfo'] = 'Please enter page info';
 $string['placeholder'] = 'Enter Page Info';
 $string['viewtitle'] = 'Coversheet';
+$string['contentslist'] = 'Contents List';
+$string['userinfo'] = 'Add User Information';
+$string['resourceslist'] = 'Resources List';
+$string['uploadtemplate'] = 'Templates';
+

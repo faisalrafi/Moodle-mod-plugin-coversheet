@@ -93,8 +93,45 @@ function coversheet_editor_options()
     return array("subdirs" => true, "maxfiles" => -1, "maxbytes" => 0);
 }
 
-function coversheet_extend_settings_navigation(settings_navigation $settings, navigation_node $coversheetnpde) {
+function coversheet_extend_settings_navigation(settings_navigation $settings, navigation_node $coversheetnode) {
+    global $USER;
+    $roles = get_user_roles($settings->get_page()->cm->context, $USER->id);
+    $userrole = array_values($roles)[0]->shortname;
 
+    if ($userrole === 'editingteacher' || is_siteadmin()) {
+        if ($settings->get_page()->cm->context) {
+            $coversheetnode->add(
+                get_string('contentslist', 'coversheet'),
+                new moodle_url('/mod/coversheet/adminpages/content_list.php', ['id' => $settings->get_page()->cm->id])
+            );
+        }
+        if ($settings->get_page()->cm->context) {
+            $coversheetnode->add(
+                get_string('userinfo', 'coversheet'),
+                new moodle_url('/mod/coversheet/adminpages/user_information.php', ['id' => $settings->get_page()->cm->id])
+            );
+        }
+        if ($settings->get_page()->cm->context) {
+            $coversheetnode->add(
+                get_string('resourceslist', 'coversheet'),
+                new moodle_url('/mod/coversheet/adminpages/resource_list.php', ['id' => $settings->get_page()->cm->id])
+            );
+        }
+        if ($settings->get_page()->cm->context) {
+            $coversheetnode->add(
+                get_string('uploadtemplate', 'coversheet'),
+                new moodle_url('/mod/coversheet/adminpages/upload_template.php', ['id' => $settings->get_page()->cm->id])
+            );
+        }
+    }
+//    else if ($userrole === get_string('student', 'schedule')) {
+//        if ($settings->get_page()->cm->context) {
+//            $reportsnode = $coversheetnode->add(
+//                get_string('myslot', 'schedule'),
+//                new moodle_url('/mod/schedule/student_booked.php', ['id' => $settings->get_page()->cm->id])
+//            );
+//        }
+//    }
 }
 
 function coversheet_prepare_html_data_for_view($data, $context)
