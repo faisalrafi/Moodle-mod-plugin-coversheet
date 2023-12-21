@@ -84,6 +84,7 @@ $display = [
     'currentDate' => $currentdate,
     'student_name' => $student_name,
     'student_sign' => $student_sign,
+    'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/report', $display);
 echo $OUTPUT->footer();
