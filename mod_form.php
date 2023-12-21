@@ -76,9 +76,13 @@ class mod_coversheet_mod_form extends moodleform_mod {
             }
         }
 
+        $mform->addElement('checkbox', 'wantgrade', get_string('wantgrading', 'coversheet'));
+
         $mform->addElement('modgrade', $gradefieldname, get_string('gradenoun'), $gradeoptions);
         $mform->addHelpButton($gradefieldname, 'modgrade', 'grades');
         $mform->setDefault($gradefieldname, $CFG->gradepointdefault);
+
+        $mform->hideIf($gradefieldname, 'wantgrade', 'notchecked');
 
         $this->standard_coursemodule_elements();
 

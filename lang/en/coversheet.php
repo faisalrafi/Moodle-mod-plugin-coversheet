@@ -38,3 +38,5 @@ $string['uploadtemplate'] = 'Templates';
 
 $string['coversheet:view'] = 'View';
 $string['coversheet:viewpage'] = 'View Page';
+
+$string['wantgrading'] = 'Want grading system for this coversheet?';
