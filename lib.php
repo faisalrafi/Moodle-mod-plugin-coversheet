@@ -28,11 +28,16 @@ function coversheet_add_instance(stdClass $data, mod_coversheet_mod_form $mform 
 
     $data->timecreated = time();
     $data->timemodified = $data->timecreated;
+    if (!isset($data->wantgrade)) {
+        $data->wantgrade = 0;
+    } 
     $data->id = $DB->insert_record('coversheet', $data);
 
     $data->instance = $data->id;
 
-    coversheet_grade_item_update($data);
+    if ($data->wantgrade == 1) {
+        coversheet_grade_item_update($data);
+    }
 
     return $data->id;
 }
@@ -51,11 +56,16 @@ function coversheet_update_instance(stdClass $data, mod_coversheet_mod_form $mfo
     $table->intro = $data->intro;
     $table->introformat = $data->introformat;
     $table->grade = $data->grade;
+    if (!isset($data->wantgrade)) {
+        $table->wantgrade = 0;
+    } else {
+        $table->wantgrade = $data->wantgrade;
+        coversheet_grade_item_update($data);
+    }
+    
     $table->timecreated = time();
     $table->timemodified = time();
     $table->id = $DB->update_record('coversheet', $table);
-
-    coversheet_grade_item_update($data);
 
     return $table->id;
 

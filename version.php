@@ -25,6 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_coversheet';  // Full name of the plugin (used for diagnostics).
-$plugin->version = 2023122100;          // The current version (Date: YYYYMMDDXX).
+$plugin->version = 2023122101;          // The current version (Date: YYYYMMDDXX).
 $plugin->requires = 2021051702;         // Requires this Moodle version.
 
