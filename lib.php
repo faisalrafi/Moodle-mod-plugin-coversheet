@@ -30,10 +30,14 @@ function coversheet_add_instance(stdClass $data, mod_coversheet_mod_form $mform 
     $data->timemodified = $data->timecreated;
     $data->id = $DB->insert_record('coversheet', $data);
 
+    $data->instance = $data->id;
+
+    coversheet_grade_item_update($data);
+
     return $data->id;
 }
 
-function coversheet_update_instance(stdClass $data, mod_schedule_mod_form $mform = null): int {
+function coversheet_update_instance(stdClass $data, mod_coversheet_mod_form $mform = null): int {
     global $DB;
     $cmid = required_param('update', PARAM_INT);
 
@@ -46,9 +50,12 @@ function coversheet_update_instance(stdClass $data, mod_schedule_mod_form $mform
     $table->name = $data->name;
     $table->intro = $data->intro;
     $table->introformat = $data->introformat;
+    $table->grade = $data->grade;
     $table->timecreated = time();
     $table->timemodified = time();
     $table->id = $DB->update_record('coversheet', $table);
+
+    coversheet_grade_item_update($data);
 
     return $table->id;
 
@@ -199,3 +206,105 @@ function coversheet_profile_list_datatypes() {
     return $datatypes;
 }
 
+/**
+ * Update grades in central gradebook
+ *
+ * @param object $coversheet
+ * @param int $userid specific user only, 0 means all
+ * @param bool $nullifnone
+ * @category grade
+ */
+function coversheet_update_grades($coversheet, $userid = 0, $nullifnone = true)
+{
+    global $CFG, $DB;
+    require_once($CFG->libdir . '/gradelib.php');
+
+    if ($coversheet->grade == 0 || $coversheet->practice) {
+        coversheet_grade_item_update($coversheet);
+
+    } else if ($grades = coversheet_get_user_grades($coversheet, $userid)) {
+        coversheet_grade_item_update($coversheet, $grades);
+
+    } else if ($userid and $nullifnone) {
+        $grade = new stdClass();
+        $grade->userid = $userid;
+        $grade->rawgrade = null;
+        coversheet_grade_item_update($coversheet, $grade);
+
+    } else {
+        coversheet_grade_item_update($coversheet);
+    }
+}
+
+/**
+ * Create grade item for given coversheet.
+ *
+ * @param stdClass $coversheet record with extra cmidnumber
+ * @param array $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
+ * @return int 0 if ok, error code otherwise
+ */
+function coversheet_grade_item_update($coversheet, $grades = null)
+{
+    global $CFG;
+    require_once($CFG->libdir . '/gradelib.php');
+
+    $params = array('itemname' => $coversheet->name, 'idnumber' => $coversheet->cmidnumber);
+
+    // Check if feedback plugin for gradebook is enabled, if yes then
+    // gradetype = GRADE_TYPE_TEXT else GRADE_TYPE_NONE.
+    $gradefeedbackenabled = false;
+
+    if (isset($coversheet->gradefeedbackenabled)) {
+        $gradefeedbackenabled = $coversheet->gradefeedbackenabled;
+    } 
+
+    if ($coversheet->grade > 0) {
+        $params['gradetype'] = GRADE_TYPE_VALUE;
+        $params['grademax'] = $coversheet->grade;
+        $params['grademin'] = 0;
+
+    } else if ($coversheet->grade < 0) {
+        $params['gradetype'] = GRADE_TYPE_SCALE;
+        $params['scaleid'] = -$coversheet->grade;
+
+    } else if ($gradefeedbackenabled) {
+        // $coversheet->grade == 0 and feedback enabled.
+        $params['gradetype'] = GRADE_TYPE_TEXT;
+    } else {
+        // $coversheet->grade == 0 and no feedback enabled.
+        $params['gradetype'] = GRADE_TYPE_NONE;
+    }
+
+    if ($grades === 'reset') {
+        $params['reset'] = true;
+        $grades = null;
+    }
+
+    return grade_update('mod/coversheet',
+        $coversheet->course,
+        'mod',
+        'coversheet',
+        $coversheet->instance,
+        0,
+        $grades,
+        $params);
+}
+
+/**
+ * Return grade for given user or all users.
+ *
+ * @param int $quizid id of quiz
+ * @param int $userid optional user id, 0 means all users
+ * @return array array of grades, false if none. These are raw grades. They should
+ * be processed with quiz_format_grade for display.
+ */
+function coversheet_get_user_grades($coversheet, $userid = 0)
+{
+    // Add your custom grade item
+    $item = new grade_item(array('itemtype' => 'mod', 'itemmodule' => 'pluginname', 'iteminstance' => 1, 'itemnumber' => 0));
+    $item->set_source('mod_coversheet');
+    $item->set_itemname('mod_coversheet');
+    $items[] = $item;
+
+    return $items;
+}

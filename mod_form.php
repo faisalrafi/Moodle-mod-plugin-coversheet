@@ -22,13 +22,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 global $CFG;
+
 defined('MOODLE_INTERNAL') || die();
+
 require_once ($CFG->dirroot.'/course/moodleform_mod.php');
-require_once("$CFG->libdir/formslib.php");
+require_once ("$CFG->libdir/formslib.php");
+
+use core_grades\component_gradeitems;
 
 class mod_coversheet_mod_form extends moodleform_mod {
 
     public function definition() {
+        global $CFG, $COURSE;
         $mform = $this->_form;
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
@@ -45,6 +50,35 @@ class mod_coversheet_mod_form extends moodleform_mod {
         $attributes = $element->getAttributes();
         $attributes['rows'] = 5;
         $element->setAttributes($attributes);
+
+        $mform->addElement('header', 'modstandardgrade', get_string('gradenoun'));
+        
+        $itemnumber = 0;
+        $component = "mod_coversheet";
+        $gradefieldname = component_gradeitems::get_field_name_for_itemnumber($component, $itemnumber, 'grade');
+        $isupdate = !empty($this->_cm);
+        $gradeoptions = array('isupdate' => $isupdate,
+                              'currentgrade' => false,
+                              'hasgrades' => false,
+                              'canrescale' => $this->_features->canrescale,
+                              'useratings' => $this->_features->rating);
+        if ($isupdate) {
+            $gradeitem = grade_item::fetch(array('itemtype' => 'mod',
+                                                    'itemmodule' => $this->_cm->modname,
+                                                    'iteminstance' => $this->_cm->instance,
+                                                    'itemnumber' => 0,
+                                                    'courseid' => $COURSE->id));
+            if ($gradeitem) {
+                $gradeoptions['currentgrade'] = $gradeitem->grademax;
+                $gradeoptions['currentgradetype'] = $gradeitem->gradetype;
+                $gradeoptions['currentscaleid'] = $gradeitem->scaleid;
+                $gradeoptions['hasgrades'] = $gradeitem->has_grades();
+            }
+        }
+
+        $mform->addElement('modgrade', $gradefieldname, get_string('gradenoun'), $gradeoptions);
+        $mform->addHelpButton($gradefieldname, 'modgrade', 'grades');
+        $mform->setDefault($gradefieldname, $CFG->gradepointdefault);
 
         $this->standard_coursemodule_elements();
 

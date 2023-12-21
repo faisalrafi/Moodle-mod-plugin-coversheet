@@ -15,16 +15,33 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Version details of mod_coversheet.
+ * Plugin upgrade steps are defined here.
  *
  * @package    mod_coversheet
  * @copyright  2023, Brain Station-23 Ltd.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Execute mod_coversheet upgrade from the given old version.
+ *
+ * @param int $oldversion
+ * @return bool
+ */
+function xmldb_coversheet_upgrade($oldversion) {
+    global $DB;
 
-$plugin->component = 'mod_coversheet';  // Full name of the plugin (used for diagnostics).
-$plugin->version = 2023122100;          // The current version (Date: YYYYMMDDXX).
-$plugin->requires = 2021051702;         // Requires this Moodle version.
+    $dbman = $DB->get_manager();
 
+    if ($oldversion < 2023122100) {
+        $table = new xmldb_table('coversheet');
+        $grade_field = new xmldb_field('grade', XMLDB_TYPE_INTEGER, '10', null, true, false, 0, null);
+
+        // Conditionally launch add field forcedownload.
+        if (!$dbman->field_exists($table, $grade_field)) {
+            $dbman->add_field($table, $grade_field);
+        }
+    }
+
+    return true;
+}
