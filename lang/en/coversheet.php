@@ -36,3 +36,5 @@ $string['userinfo'] = 'Add User Information';
 $string['resourceslist'] = 'Resources List';
 $string['uploadtemplate'] = 'Templates';
 
+$string['coversheet:view'] = 'View';
+$string['coversheet:viewpage'] = 'View Page';
