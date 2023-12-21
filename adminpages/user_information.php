@@ -41,7 +41,8 @@ $details = $DB->get_records('coversheet_field_type', ['cmid' => $cmid]);
 //var_dump($details); die();
 $display = [
     'cmid' => $cmid,
-    'details' => array_values($details)
+    'details' => array_values($details),
+    'webroot' => $CFG->wwwroot
 ];
 
 echo $OUTPUT->render_from_template('mod_coversheet/user_information', $display);

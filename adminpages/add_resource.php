@@ -57,5 +57,5 @@ if ($form->is_cancelled()) {
 echo $OUTPUT->header();
 
 $form->display();
-echo "<a href='/mod/coversheet/adminpages/resource_list.php?id=$cmid' class='btn btn-md btn-outline-info mt-4'>Resource List</a>";
+echo "<a href='$CFG->wwwroot/mod/coversheet/adminpages/resource_list.php?id=$cmid' class='btn btn-md btn-outline-info mt-4'>Resource List</a>";
 echo $OUTPUT->footer();

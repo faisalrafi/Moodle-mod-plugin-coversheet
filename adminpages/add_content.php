@@ -64,5 +64,5 @@ elseif ($data = $mform->get_data()) {
     redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)));
 }
 $mform->display();
-echo "<a href='/mod/coversheet/adminpages/content_list.php?id=$id' class='btn btn-md btn-outline-info mt-4'>Content List</a>";
+echo "<a href='$CFG->wwwroot/mod/coversheet/adminpages/content_list.php?id=$id' class='btn btn-md btn-outline-info mt-4'>Content List</a>";
 echo $OUTPUT->footer();
