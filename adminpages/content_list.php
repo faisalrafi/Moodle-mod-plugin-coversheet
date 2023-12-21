@@ -47,6 +47,7 @@ foreach ($contents as $content) {
 $display = [
     'contents' => array_values($contents),
     'cmid' => $cmid,
+    'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/content_list', $display);
 echo $OUTPUT->footer();

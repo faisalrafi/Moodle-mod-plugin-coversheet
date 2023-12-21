@@ -63,6 +63,7 @@ if ($hasCapabilityViewPage) {
     $display = [
         'cmid' => $id,
         'details' => array_values($details),
+        'webroot' => $CFG->wwwroot
     ];
     echo $OUTPUT->render_from_template('mod_coversheet/view', $display);
 } else {
@@ -109,6 +110,7 @@ if ($hasCapabilityViewPage) {
         'email' => $email,
         'phone' => $phone,
         'currentDate' => $currentdate,
+        'webroot' => $CFG->wwwroot,
         'infos' => array_values($info),
         'results' => array_values($results),
     ];
