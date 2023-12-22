@@ -35,8 +35,17 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/coversheet/adminpages/upload_template.php', array('id' => $id));
 $PAGE->set_title("Templates");
-
-
+$PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();
+
+$sql = "SELECT ct.id as templateid, ct.title FROM {coversheet_templates} ct WHERE ct.cmid ='$id'";
+$templates = $DB->get_records_sql($sql);
+
+$display = [
+    'templates' => array_values($templates),
+    'cmid' => $id,
+    'webroot' => $CFG->wwwroot
+];
+echo $OUTPUT->render_from_template('mod_coversheet/template_list', $display);
 echo $OUTPUT->footer();

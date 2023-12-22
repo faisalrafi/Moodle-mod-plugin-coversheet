@@ -40,3 +40,6 @@ $string['coversheet:view'] = 'View';
 $string['coversheet:viewpage'] = 'View Page';
 
 $string['wantgrading'] = 'Want grading system for this coversheet?';
+
+$string['template_title'] = 'Enter Title of this template';
+$string['template_active'] = 'Make this template active';

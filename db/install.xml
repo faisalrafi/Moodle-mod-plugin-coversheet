@@ -146,5 +146,20 @@
                 <KEY NAME="reqid" FIELDS="reqid" TYPE="foreign" REFTABLE="coversheet_requirements" REFFIELDS="id" />
             </KEYS>
         </TABLE>
+        <TABLE NAME="coversheet_templates" COMMENT="each record represents coversheet template">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"/>
+                <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="title" TYPE="text" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="template" TYPE="text" NOTNULL="true" SEQUENCE="false" />
+                <FIELD NAME="active" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for coversheet_contents"/>
+                <KEY NAME="cmid" FIELDS="cmid" TYPE="foreign" REFTABLE="coversheet" REFFIELDS="id" />
+            </KEYS>
+        </TABLE>
     </TABLES>
 </XMLDB>

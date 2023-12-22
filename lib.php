@@ -105,6 +105,32 @@ function coversheet_insert_content($data, $context, $id)
 
 }
 
+function coversheet_insert_template($data, $context, $id)
+{
+    global $DB;
+
+    $template = new stdClass();
+    $template->cmid = $id;
+    $template->title = $data->title;
+    $template->template = "";
+    if (!isset($data->active)) {
+        $template->active = 0;
+    } else {
+        $template->active = $data->active;
+    }
+    $template->timecreated = time();
+    $template->timemodified = time();
+    $template->id = $DB->insert_record('coversheet_templates', $template);
+
+    if (!empty($data->template_editor)) {
+        $template->template_editor = $data->template_editor;
+        $template = file_postupdate_standard_editor($template, 'template', coversheet_editor_options(), $context, 'mod_coversheet', 'template_editor', $template->id);
+    }
+
+    $DB->update_record('coversheet_templates', $template);
+    return $template->id;
+}
+
 function coversheet_editor_options()
 {
     return array("subdirs" => true, "maxfiles" => -1, "maxbytes" => 0);
