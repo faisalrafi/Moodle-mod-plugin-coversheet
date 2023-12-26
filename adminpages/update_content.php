@@ -84,7 +84,7 @@ if ($action === 'delete'){
     redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)), 'Content Deleted Successfully');
 }
 if ($contentid) {
-    $content = coversheet_get_html_data(coversheet_contents", $contentid);
+    $content = coversheet_get_html_data("coversheet_contents", $contentid);
 
     $formData = file_prepare_standard_editor($content, 'html', coversheet_editor_options(), $context, 'mod_coversheet', 'html_editor', $content->id);
     $mform->set_data($formData);
