@@ -219,11 +219,11 @@ function coversheet_load_content($content, $context, $cmid)
     return $html;
 }
 
-function coversheet_get_html_data($html_id, $is_array = false)
+function coversheet_get_html_data($table_name, $html_id, $is_array = false)
 {
 
     global $DB;
-    $html = $DB->get_record("coversheet_contents", ["id" => $html_id]);
+    $html = $DB->get_record($table_name, ["id" => $html_id]);
 
     if ($is_array && $html)
         return (array)$html;

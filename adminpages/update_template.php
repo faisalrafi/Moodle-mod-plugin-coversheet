@@ -52,14 +52,14 @@ class update_template_form extends moodleform
         $mform->addElement('text', 'title', get_string('template_title', 'coversheet'), array());
         $mform->addRule('title', 'Please enter the title', 'required');
 
-        $mform->addElement('editor', 'html_editor', 'Content', null, [
+        $mform->addElement('editor', 'template_editor', 'Template', null, [
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'accepted_types' => '*',
             'maxbytes' => 0, // Maximum file size in bytes (1MB)
         ]);
 
-        $mform->setType('html_editor', PARAM_RAW);
-        $mform->setDefault('html_editor', $this->_customdata['html'] ?? '');
+        $mform->setType('template_editor', PARAM_RAW);
+        $mform->setDefault('template_editor', $this->_customdata['html'] ?? '');
 
         $mform->addElement('checkbox', 'active', get_string('template_active', 'coversheet'));
 
@@ -75,9 +75,9 @@ if ($mform->is_cancelled()) {
 } elseif ($data = $mform->get_data()) {
     $template->title = $data->title;
     $template->template = "";
-    if (!empty($data->html_editor)) {
-        $template->template = $data->html_editor;
-        $template = file_postupdate_standard_editor($template, 'html', coversheet_editor_options(), $context, 'mod_coversheet', 'html_editor', $template->id);
+    if (!empty($data->template_editor)) {
+        $template->template_editor = $data->template_editor;
+        $template = file_postupdate_standard_editor($template, 'template', coversheet_editor_options(), $context, 'mod_coversheet', 'template_editor', $template->id);
     }
     if (!isset($data->active)) {
         $template->active = 0;
@@ -95,9 +95,9 @@ if ($action === 'delete') {
     redirect(new moodle_url('/mod/coversheet/adminpages/upload_template.php', array('id' => $id)), 'Template Deleted Successfully', null, \core\output\notification::NOTIFY_SUCCESS);
 }
 if ($templateid) {
-    $content = coversheet_get_html_data($templateid);
+    $template = coversheet_get_html_data("coversheet_templates", $templateid);
 
-    $formData = file_prepare_standard_editor($content, 'html', coversheet_editor_options(), $context, 'mod_coversheet', 'html_editor', $content->id);
+    $formData = file_prepare_standard_editor($template, 'template', coversheet_editor_options(), $context, 'mod_coversheet', 'template_editor', $content->id);
     $mform->set_data($formData);
 }
 $mform->display();
