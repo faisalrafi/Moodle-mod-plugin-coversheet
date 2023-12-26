@@ -53,5 +53,24 @@ function xmldb_coversheet_upgrade($oldversion) {
         }
     }
 
+    if ($oldversion < 2023122103) {
+        $table = new xmldb_table('coversheet_templates');
+
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, true, true, null, null);
+        $table->add_field('cmid', XMLDB_TYPE_INTEGER, '10', null, true, false, null, null);
+        $table->add_field('title', XMLDB_TYPE_TEXT, '100', null, true, false, null, null);
+        $table->add_field('template', XMLDB_TYPE_TEXT, '10000', null, true, false, null, null);
+        $table->add_field('active', XMLDB_TYPE_INTEGER, '10', null, true, false, 0, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, true, false, 0, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, true, false, 0, null);
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('cmid', XMLDB_KEY_FOREIGN, ['cmid'], 'coversheet', ['id']);
+
+        // Conditionally launch create table for fees.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+    }
+
     return true;
 }

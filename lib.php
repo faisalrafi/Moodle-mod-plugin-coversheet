@@ -105,6 +105,32 @@ function coversheet_insert_content($data, $context, $id)
 
 }
 
+function coversheet_insert_template($data, $context, $id)
+{
+    global $DB;
+
+    $template = new stdClass();
+    $template->cmid = $id;
+    $template->title = $data->title;
+    $template->template = "";
+    if (!isset($data->active)) {
+        $template->active = 0;
+    } else {
+        $template->active = $data->active;
+    }
+    $template->timecreated = time();
+    $template->timemodified = time();
+    $template->id = $DB->insert_record('coversheet_templates', $template);
+
+    if (!empty($data->template_editor)) {
+        $template->template_editor = $data->template_editor;
+        $template = file_postupdate_standard_editor($template, 'template', coversheet_editor_options(), $context, 'mod_coversheet', 'template_editor', $template->id);
+    }
+
+    $DB->update_record('coversheet_templates', $template);
+    return $template->id;
+}
+
 function coversheet_editor_options()
 {
     return array("subdirs" => true, "maxfiles" => -1, "maxbytes" => 0);
@@ -193,11 +219,11 @@ function coversheet_load_content($content, $context, $cmid)
     return $html;
 }
 
-function coversheet_get_html_data($html_id, $is_array = false)
+function coversheet_get_html_data($table_name, $html_id, $is_array = false)
 {
 
     global $DB;
-    $html = $DB->get_record("coversheet_contents", ["id" => $html_id]);
+    $html = $DB->get_record($table_name, ["id" => $html_id]);
 
     if ($is_array && $html)
         return (array)$html;
