@@ -357,3 +357,27 @@ function make_inactive_template($id) {
     $params['id'] = $id;
     $DB->execute($sql, $params);
 }
+
+function get_short_names($cmid) {
+    global $DB;
+    $short_names = array(
+        'firstname',
+        'lastname', 
+        'email',
+        'phone1',
+        'phone2',
+        'institution',
+        'department',
+        'address',
+        'city',
+        'country', 
+        'student_signature',
+        'teacher_signature'
+        );
+    $db_short_names = $DB->get_records('coversheet_field_type', array('cmid' => $cmid));
+
+    foreach($db_short_names as $db_short_name) {
+        $short_names[] = $db_short_name->shortname;
+    }
+    return $short_names;
+}

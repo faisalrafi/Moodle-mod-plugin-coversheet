@@ -47,6 +47,13 @@ class update_template_form extends moodleform
     {
         $mform = $this->_form;
 
+        $mform->addElement('html', '<h4>Available short names</h4>');
+        $short_names = get_short_names($this->_customdata['cmid']);
+        foreach ($short_names as $short_name) {
+            $mform->addElement('html', '<code class="btn btn-outline-primary mr-2 mt-2" style="user-select: text"> ' . $short_name . '</code>');
+        }
+        $mform->addElement('html', '<div class="mb-5"></div>');
+
         $mform->addElement('text', 'title', get_string('template_title', 'coversheet'), array());
         $mform->setType('title', PARAM_TEXT);
         $mform->addRule('title', 'Please enter the title', 'required');
@@ -69,7 +76,7 @@ class update_template_form extends moodleform
 
 $template = $DB->get_record('coversheet_templates', array('id' => $templateid));
 
-$mform = new update_template_form(new moodle_url('/mod/coversheet/adminpages/update_template.php', array('id' => $id, 'templateid' => $templateid)));
+$mform = new update_template_form(new moodle_url('/mod/coversheet/adminpages/update_template.php', array('id' => $id, 'templateid' => $templateid)), array('cmid' => $id));
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/mod/coversheet/adminpages/upload_template.php', array('id' => $id,)));
 } elseif ($data = $mform->get_data()) {
