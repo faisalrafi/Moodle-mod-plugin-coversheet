@@ -43,3 +43,4 @@ $string['wantgrading'] = 'Want grading system for this coversheet?';
 
 $string['template_title'] = 'Enter Title of this template';
 $string['template_active'] = 'Make this template active';
+$string['template_missing'] = '<br><h4>No Active Template Found!!!<h4><br><h5>Please Activate any of your templates</h5><br>';

@@ -41,8 +41,6 @@ $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/coversheet/update_content.php', array('id' => $id, 'contentid' => $contentid));
 $PAGE->set_title("Coversheet - Update content");
 
-echo $OUTPUT->header();
-
 class update_content_form extends moodleform
 {
     public function definition()
@@ -71,7 +69,7 @@ if ($mform->is_cancelled()) {
     $html->html = "";
     if (!empty($data->html_editor)) {
         $html->html_editor = $data->html_editor;
-        $html = file_postupdate_standard_editor($html, 'html', coversheet_editor_options(), $context, 'mod_coversheet', 'html_editor', $html->id);
+        $html = file_postupdate_standard_editor($html, 'html', coversheet_editor_options($context), $context, 'mod_coversheet', 'html_editor', $html->id);
     }
     $html->timemodified = time();
 
@@ -83,10 +81,11 @@ if ($action === 'delete'){
     $DB->delete_records('coversheet_contents',['id' => $contentid]);
     redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)), 'Content Deleted Successfully');
 }
+echo $OUTPUT->header();
 if ($contentid) {
     $content = coversheet_get_html_data("coversheet_contents", $contentid);
 
-    $formData = file_prepare_standard_editor($content, 'html', coversheet_editor_options(), $context, 'mod_coversheet', 'html_editor', $content->id);
+    $formData = file_prepare_standard_editor($content, 'html', coversheet_editor_options($context), $context, 'mod_coversheet', 'html_editor', $content->id);
     $mform->set_data($formData);
 }
 $mform->display();

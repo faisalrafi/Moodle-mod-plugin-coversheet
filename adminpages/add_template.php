@@ -39,13 +39,12 @@ $PAGE->set_url('/mod/coversheet/adminpages/add_template.php', array('id' => $id)
 $PAGE->set_title("Add Template");
 $PAGE->set_heading("Add Template");
 
-echo $OUTPUT->header();
-
 class add_template_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
         $mform->addElement('text', 'title', get_string('template_title', 'coversheet'), array());
+        $mform->setType('title', PARAM_TEXT);
         $mform->addRule('title', 'Please enter the title', 'required');
 
         $editoroption = array("subdirs"=>1, "maxfiles" => -1);
@@ -69,6 +68,7 @@ else if ($data = $mform->get_data()) {
     $phase_id = coversheet_insert_template($data, $context, $id);
     redirect(new moodle_url('/mod/coversheet/adminpages/upload_template.php', array('id' => $id)));
 }
+echo $OUTPUT->header();
 $mform->display();
 echo "<a href='$CFG->wwwroot/mod/coversheet/adminpages/upload_template.php?id=$id' class='btn btn-md btn-outline-info mt-4'>Template List</a>";
 echo $OUTPUT->footer();
