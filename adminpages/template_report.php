@@ -42,7 +42,21 @@ $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();
 
-$template = $DB->get_record('coversheet_templates', array('id' => 1));
+$template = $DB->get_record('coversheet_templates', array('id' => $templateid));
+
+$user = $DB->get_record('user', array('id' => $studentid));
+
+$inputString = $template->template;
+
+$pattern = "/\[(.*?)\]/";
+
+preg_match_all($pattern, $inputString, $matches);
+
+$extractedValues = $matches[1];
+
+foreach ($extractedValues as $index => $value) {
+    $inputString = str_replace("[" . $value . "]", $user->$value, $inputString);
+}
 
 $query = "SELECT cc.id as contentid, cc.html FROM {coversheet_contents} cc 
           WHERE cc.cmid = :cmid";
@@ -63,4 +77,5 @@ $display = [
     'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/template_report', $display);
+echo $inputString;
 echo $OUTPUT->footer();
