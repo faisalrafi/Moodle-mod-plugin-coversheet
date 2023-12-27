@@ -25,65 +25,107 @@
 global $CFG, $USER, $DB;
 require_once('../../../config.php');
 
-$cmid = $_POST['cmid'];
-$shortname = $_POST['shortname'];
-$name = $_POST['name'];
-$requireCheckbox = $_POST['requireCheckbox'];
-$requireRadio = $_POST['requireRadio'];
-$requireTextarea = $_POST['requireTextarea'];
-$requireText = $_POST['requireText'];
-$requireDropdown = $_POST['requireDropdown'];
+//$cmid = $_POST['cmid'];
+$cmid = $_POST['cmid'] ?? '';
+$shortname = $_POST['shortname']?? '';
+$name = $_POST['name']?? '';
+$requireCheckbox = $_POST['requireCheckbox']?? '';
+$requireRadio = $_POST['requireRadio']?? '';
+$requireTextarea = $_POST['requireTextarea']?? '';
+$requireText = $_POST['requireText']?? '';
+$requireDropdown = $_POST['requireDropdown']?? '';
 
-$options = $_POST['radioOptions'];
-$dropdownList = $_POST['dropdownList'];
-$action = $_POST['action'];
+$options = $_POST['radioOptions']?? '';
+$dropdownList = $_POST['dropdownList']?? '';
+$action = $_POST['action']?? '';
 
-$data = new stdClass();
-$data->cmid = $cmid;
-$data->name = $name;
-$data->shortname = $shortname;
-
-// Set 'datatype' based on the 'action' parameter
-switch ($action) {
-    case 'checkbox':
-        $data->datatype = 'checkbox';
-        $data->param = '';
-        $data->required = $requireCheckbox;
-        break;
-    case 'dropdown':
-        $data->datatype = 'dropdown';
-        $optionsString = implode(',', $dropdownList);
-        $data->param = $optionsString;
-        $data->required = $requireDropdown;
-//        $data->param = json_encode($dropdownList);
-        break;
-    case 'radio':
-        $data->datatype = 'radio';
-        $optionsString = implode(',', $options);
-        $data->param = $optionsString;
-        $data->required = $requireRadio;
-//        $data->param = json_encode($options);
-        break;
-    case 'textarea':
-        $data->datatype = 'textarea';
-        $data->param = '';
-        $data->required = $requireTextarea;
-        break;
-    case 'text':
-        $data->datatype = 'text';
-        $data->param = '';
-        $data->required = $requireText;
-        break;
-    default:
-        // Handle other cases or set a default value
-        $data->datatype = '';
-        $data->param = '';
+$existingShortname = $DB->get_records_sql(
+    "SELECT * FROM {coversheet_field_type} 
+    WHERE cmid = :cmid AND shortname = :shortname",
+    array('cmid' => $cmid, 'shortname' => $shortname)
+);
+if ($existingShortname){
+    echo 'duplicate';
 }
-$data->timecreated = time();
+else {
+    // Set 'datatype' based on the 'action' parameter
+    switch ($action) {
+        case 'checkbox':
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->name = $name;
+            $data->shortname = $shortname;
+            $data->datatype = 'checkbox';
+            $data->param = '';
+            $data->required = $requireCheckbox;
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_type', $data);
+            break;
+        case 'dropdown':
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->name = $name;
+            $data->shortname = $shortname;
+            $data->datatype = 'dropdown';
+            $optionsString = implode(',', $dropdownList);
+            $data->param = $optionsString;
+            $data->required = $requireDropdown;
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_type', $data);
+            break;
+        case 'radio':
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->name = $name;
+            $data->shortname = $shortname;
+            $data->datatype = 'radio';
+            $optionsString = implode(',', $options);
+            $data->param = $optionsString;
+            $data->required = $requireRadio;
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_type', $data);
+            break;
+        case 'textarea':
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->name = $name;
+            $data->shortname = $shortname;
+            $data->datatype = 'textarea';
+            $data->param = '';
+            $data->required = $requireTextarea;
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_type', $data);
+            break;
+        case 'text':
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->name = $name;
+            $data->shortname = $shortname;
+            $data->datatype = 'text';
+            $data->param = '';
+            $data->required = $requireText;
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_type', $data);
+            break;
+        default:
+            // Handle other cases or set a default value
+            $data = new stdClass();
+            $data->cmid = '';
+            $data->name = '';
+            $data->shortname = '';
+            $data->datatype = '';
+            $data->param = '';
+            $data->required = '';
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_type', $data);
+    }
 
-$result = $DB->insert_record('coversheet_field_type', $data);
+//    $result = $DB->insert_record('coversheet_field_type', $data);
 
-if ($result) {
-    echo 'success';
+    if ($result) {
+        echo 'success';
+    } else {
+        echo 'error';
+    }
 }
 

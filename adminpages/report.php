@@ -50,6 +50,7 @@ foreach ($contents as $content) {
 $sql = "SELECT * FROM {coversheet_attempts} ca
              WHERE ca.cmid = :cmid AND ca.student_id = :studentid";
 $details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
+//var_dump($details); die();
 $student_name = $details->candidate_name;
 $student_sign = $details->candidate_sign;
 

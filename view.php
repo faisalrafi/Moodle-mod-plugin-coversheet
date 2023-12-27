@@ -94,6 +94,17 @@ if ($hasCapabilityViewPage) {
 
         if ($field->isRadio) {
             $field->radioOptions = explode(',', $field->param);
+//            var_dump($field->radioOptions); die();
+
+//            if($field->isRequired) {
+//                // Add an 'isFirst' property to the first radio option
+//                foreach ($field->radioOptions as $index => $option) {
+//                    $field->radioOptions[$index] = [
+//                        'value' => $option,
+//                        'isFirst' => ($index === 0),
+//                    ];
+//                }
+//            }
         }
         $field->isDropdown = ($field->datatype === 'dropdown');
         if ($field->isDropdown) {
@@ -114,6 +125,7 @@ if ($hasCapabilityViewPage) {
         'currentDate' => $currentdate,
         'infos' => array_values($info),
         'results' => array_values($results),
+//        'requiredFields' => json_encode($requiredFields),
     ];
     echo $OUTPUT->render_from_template('mod_coversheet/view_student', $display);
 

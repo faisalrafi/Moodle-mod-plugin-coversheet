@@ -236,3 +236,14 @@ label {
 .result-item {
     margin-bottom: 8px;
 }
+
+.required-text {
+    color: #e74c3c; /* Red color */
+    font-size: 10px;
+    font-weight: bold;
+    display: inline-block;
+    background-color: #f8d7da; /* Light red background color */
+    padding: 3px 5px;
+    border-radius: 5px;
+    margin-left: 45px;
+}

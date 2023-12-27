@@ -43,6 +43,7 @@ $details = $DB->get_records('coversheet_requirements', ['cmid' => $cmid]);
 $display = [
     'resources' => array_values($details),
     'cmid' => $cmid,
+    'webroot' => $CFG->wwwroot,
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/resource_list', $display);
 echo $OUTPUT->footer();
