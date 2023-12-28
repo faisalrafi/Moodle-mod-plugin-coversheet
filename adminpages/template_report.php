@@ -37,7 +37,7 @@ require_login($course, true, $cm);
 
 $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/coversheet/adminpages/template_report.php', array('id' => $id, 'studentid' => $studentid, 'templateid' => $templateid));
-$PAGE->set_title("Template Report");
+$PAGE->set_title("Report");
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();
@@ -104,8 +104,21 @@ $display = [
     'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/template_report', $display);
-echo "<div>";
+echo "<div id='printableArea'>";
 echo $inputString;
 echo "</div>";
-echo '<button onclick="window.print()">Print this page</button>';
+echo '<button class="btn btn-primary mr-2" onclick="printdiv(\'printableArea\')">Print this page</button>';
+echo '<a href="'. $CFG->wwwroot .'/mod/coversheet/adminpages/view_template.php?id=' . $id .'" class="btn btn-danger">Back</a>';
+echo "<script>
+function printdiv(elem) {
+  var header_str = '<html><head><title>' + document.title  + '</title></head><body>';
+  var footer_str = '</body></html>';
+  var new_str = document.getElementById(elem).innerHTML;
+  var old_str = document.body.innerHTML;
+  document.body.innerHTML = header_str + new_str + footer_str;
+  window.print();
+  document.body.innerHTML = old_str;
+  return false;
+}
+</script>";
 echo $OUTPUT->footer();
