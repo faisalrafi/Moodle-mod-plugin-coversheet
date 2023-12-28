@@ -39,8 +39,6 @@ $PAGE->set_url('/mod/coversheet/adminpages/add_content.php', array('id' => $id))
 $PAGE->set_title("Add Content");
 $PAGE->set_heading("Add Content");
 
-echo $OUTPUT->header();
-
 class add_content_form extends moodleform {
     public function definition() {
 
@@ -63,6 +61,7 @@ elseif ($data = $mform->get_data()) {
     $phase_id = coversheet_insert_content($data, $context, $id);
     redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)));
 }
+echo $OUTPUT->header();
 $mform->display();
 echo "<a href='$CFG->wwwroot/mod/coversheet/adminpages/content_list.php?id=$id' class='btn btn-md btn-outline-info mt-4'>Content List</a>";
 echo $OUTPUT->footer();

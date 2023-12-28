@@ -97,7 +97,7 @@ function coversheet_insert_content($data, $context, $id)
 
     if (!empty($data->html_editor)) {
         $content->html_editor = $data->html_editor;
-        $content = file_postupdate_standard_editor($content, 'html', coversheet_editor_options(), $context, 'mod_coversheet', 'html_editor', $content->id);
+        $content = file_postupdate_standard_editor($content, 'html', coversheet_editor_options($context), $context, 'mod_coversheet', 'html_editor', $content->id);
     }
 
     $DB->update_record('coversheet_contents', $content);
@@ -122,18 +122,22 @@ function coversheet_insert_template($data, $context, $id)
     $template->timemodified = time();
     $template->id = $DB->insert_record('coversheet_templates', $template);
 
+    if ($template->active == 1) {
+        make_inactive_template($template->id);
+    }
+
     if (!empty($data->template_editor)) {
         $template->template_editor = $data->template_editor;
-        $template = file_postupdate_standard_editor($template, 'template', coversheet_editor_options(), $context, 'mod_coversheet', 'template_editor', $template->id);
+        $template = file_postupdate_standard_editor($template, 'template', coversheet_editor_options($context), $context, 'mod_coversheet', 'template_editor', $template->id);
     }
 
     $DB->update_record('coversheet_templates', $template);
     return $template->id;
 }
 
-function coversheet_editor_options()
+function coversheet_editor_options($context)
 {
-    return array("subdirs" => true, "maxfiles" => -1, "maxbytes" => 0);
+    return array("subdirs" => true, "maxfiles" => -1, "maxbytes" => 0, "context" => $context);
 }
 
 function coversheet_extend_settings_navigation(settings_navigation $settings, navigation_node $coversheetnode) {
@@ -343,4 +347,39 @@ function coversheet_get_user_grades($coversheet, $userid = 0)
     $items[] = $item;
 
     return $items;
+}
+
+function make_inactive_template($id) {
+    global $DB;
+    $sql = "UPDATE `mdl_coversheet_templates` 
+            SET `active` = '0' 
+            WHERE {coversheet_templates}.id != :id";
+    $params['id'] = $id;
+    $DB->execute($sql, $params);
+}
+
+function get_short_names($cmid) {
+    global $DB;
+    $short_names = array(
+        'firstname',
+        'lastname', 
+        'email',
+        'phone1',
+        'phone2',
+        'institution',
+        'department',
+        'address',
+        'city',
+        'country', 
+        'student_name',
+        'student_signature',
+        'teacher_name',
+        'teacher_signature'
+        );
+    $db_short_names = $DB->get_records('coversheet_field_type', array('cmid' => $cmid));
+
+    foreach($db_short_names as $db_short_name) {
+        $short_names[] = $db_short_name->shortname;
+    }
+    return $short_names;
 }

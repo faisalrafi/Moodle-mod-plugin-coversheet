@@ -23,13 +23,22 @@
     Add Templates
 </a>
 
+<a href="{{webroot}}/mod/coversheet/adminpages/view_template.php?id={{cmid}}" class="btn btn-outline-primary">
+    View Active Template
+</a>
+
 <h2 class="resource-heading mt-5">Template List</h2>
 <ul class="resource-list">
     {{#templates}}
-        <li class="list-design mb-3">{{title}}</li>
-        <a href="preview_template.php?id={{id}}&cmid={{cmid}}" class="btn btn-sm btn-primary mb-2 border-radius">Preview</a>
-        <a href="update_template.php?id={{cmid}}&templateid={{templateid}}" class="btn btn-sm btn-info mb-2 border-radius">Edit</a>
-        <a class="btn btn-sm btn-danger mb-2 border-radius" href="#" data-toggle="modal" data-target="#deleteModal{{templateid}}">Delete</a>
+        {{#active}}
+            <li class="list-design mb-2 d-flex justify-content-between" style="background-color: #50ff00">{{title}} <b>Activated</b></li> 
+        {{/active}}   
+        {{^active}}
+            <li class="list-design mb-2">{{title}}</li> 
+        {{/active}} 
+        
+        <a href="update_template.php?id={{cmid}}&templateid={{templateid}}" class="btn btn-sm btn-info mb-4 border-radius">Edit</a>
+        <a class="btn btn-sm btn-danger mb-4 border-radius" href="#" data-toggle="modal" data-target="#deleteModal{{templateid}}">Delete</a>
         <div class="modal fade" id="deleteModal{{templateid}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                     <div class="modal-content">

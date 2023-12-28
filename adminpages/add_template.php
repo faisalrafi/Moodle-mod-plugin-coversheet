@@ -39,18 +39,24 @@ $PAGE->set_url('/mod/coversheet/adminpages/add_template.php', array('id' => $id)
 $PAGE->set_title("Add Template");
 $PAGE->set_heading("Add Template");
 
-echo $OUTPUT->header();
-
 class add_template_form extends moodleform {
     public function definition() {
         $mform = $this->_form;
 
+        $mform->addElement('html', '<h4>Available short names</h4>');
+        $short_names = get_short_names($this->_customdata['cmid']);
+        foreach ($short_names as $short_name) {
+            $mform->addElement('html', '<code class="btn btn-outline-primary mr-2 mt-2" style="user-select: text"> ' . $short_name . '</code>');
+        }
+        $mform->addElement('html', '<div class="mb-5"></div>');
+
         $mform->addElement('text', 'title', get_string('template_title', 'coversheet'), array());
+        $mform->setType('title', PARAM_TEXT);
         $mform->addRule('title', 'Please enter the title', 'required');
 
         $editoroption = array("subdirs"=>1, "maxfiles" => -1);
 
-        $mform->addElement('editor', 'template_editor', 'Template', null, $editoroption);
+        $mform->addElement('editor', 'template_editor', 'Template', null, $editoroption, 'rows="20" cols="50"');
         $mform->setType('template_editor', PARAM_RAW);
         $mform->setDefault('template_editor', $this->_customdata['template'] ?? '');
         $mform->addRule('template_editor', 'Please enter the template', 'required');
@@ -61,7 +67,7 @@ class add_template_form extends moodleform {
     }
 }
 
-$mform = new add_template_form(new moodle_url('/mod/coversheet/adminpages/add_template.php', array('id' => $id)));
+$mform = new add_template_form(new moodle_url('/mod/coversheet/adminpages/add_template.php', array('id' => $id)), array('cmid' => $id));
 if ($mform->is_cancelled()) {
     redirect(new moodle_url('/mod/coversheet/adminpages/upload_template.php', array('id' => $id)));
 }
@@ -69,6 +75,7 @@ else if ($data = $mform->get_data()) {
     $phase_id = coversheet_insert_template($data, $context, $id);
     redirect(new moodle_url('/mod/coversheet/adminpages/upload_template.php', array('id' => $id)));
 }
+echo $OUTPUT->header();
 $mform->display();
 echo "<a href='$CFG->wwwroot/mod/coversheet/adminpages/upload_template.php?id=$id' class='btn btn-md btn-outline-info mt-4'>Template List</a>";
 echo $OUTPUT->footer();
