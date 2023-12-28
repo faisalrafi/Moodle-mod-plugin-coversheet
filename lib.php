@@ -371,7 +371,9 @@ function get_short_names($cmid) {
         'address',
         'city',
         'country', 
+        'student_name',
         'student_signature',
+        'teacher_name',
         'teacher_signature'
         );
     $db_short_names = $DB->get_records('coversheet_field_type', array('cmid' => $cmid));

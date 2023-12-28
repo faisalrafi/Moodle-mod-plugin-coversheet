@@ -46,6 +46,30 @@ $template = $DB->get_record('coversheet_templates', array('id' => $templateid));
 
 $user = $DB->get_record('user', array('id' => $studentid));
 
+$query = "SELECT cft.shortname, cfd.value, cft.datatype FROM {coversheet_field_type} cft
+          LEFT JOIN {coversheet_field_data} cfd ON cft.id = cfd.fieldid
+          WHERE cft.cmid = :cmid AND cfd.student_id = :studentid";
+$custom_values = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid]);
+
+foreach ($custom_values as $custom_value) {
+    $key = $custom_value->shortname;
+    $user->$key = $custom_value->value;
+}
+
+$feedback_query = "SELECT assessor_name, assessor_sign FROM {coversheet_feedbacks} cf 
+                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid'";
+$feedback = $DB->get_record_sql($feedback_query);
+
+$user->teacher_name = $feedback->assessor_name;
+$user->teacher_signature = $feedback->assessor_sign;
+
+$sql = "SELECT * FROM {coversheet_attempts} ca
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid";
+$details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
+
+$user->student_name = $details->candidate_name;
+$user->student_signature = $details->candidate_sign;
+
 $inputString = $template->template;
 
 $pattern = "/\[(.*?)\]/";
@@ -55,7 +79,12 @@ preg_match_all($pattern, $inputString, $matches);
 $extractedValues = $matches[1];
 
 foreach ($extractedValues as $index => $value) {
-    $inputString = str_replace("[" . $value . "]", $user->$value, $inputString);
+    if ($value == "student_signature" || $value == "teacher_signature") {
+        $replace_value = '<img src="' . $user->$value . '" alt="signature" height="200px" width="500px" class="conclusion-image">';
+        $inputString = str_replace("[" . $value . "]", $replace_value, $inputString);
+    } else {
+        $inputString = str_replace("[" . $value . "]", $user->$value, $inputString);
+    }
 }
 
 $query = "SELECT cc.id as contentid, cc.html FROM {coversheet_contents} cc 
@@ -72,10 +101,11 @@ $resources = $DB->get_records_sql($resource_query);
 $display = [
     'cmid' => $id,
     'templateid' => $template->id,
-    'contents' => array_values($contents),
-    'resources' => array_values($resources),
     'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/template_report', $display);
+echo "<div>";
 echo $inputString;
+echo "</div>";
+echo '<button onclick="window.print()">Print this page</button>';
 echo $OUTPUT->footer();

@@ -21,24 +21,3 @@
 <a href="{{webroot}}/mod/coversheet/adminpages/view_template.php?id={{cmid}}" class="btn btn-danger mb-2">
 Back
 </a>
-
-<div class="report-body">
-    {{#contents}}
-        {{{html}}}
-    {{/contents}}
-    <hr>
-    <h3 class="report-heading">Resource Requirements</h3>
-    <ul class="resource-list">
-        {{#resources}}
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    {{resource}}
-                </label>
-            </div>
-        {{/resources}}
-    </ul>
-    <hr>
-</div>
-
-<h3 class="report-heading mb-5 mt-5">Student Extra Information</h3>
