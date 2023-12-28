@@ -142,6 +142,7 @@ function coversheet_editor_options($context)
 
 function coversheet_extend_settings_navigation(settings_navigation $settings, navigation_node $coversheetnode) {
     global $USER;
+
     $roles = get_user_roles($settings->get_page()->cm->context, $USER->id);
     $userrole = array_values($roles)[0]->shortname;
 

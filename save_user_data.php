@@ -26,40 +26,46 @@ global $CFG, $USER, $DB;
 require_once('../../config.php');
 
 $cmid = $_POST['cmid'];
-$fieldid = $_POST['fieldid'];
-$checkboxValue = $_POST['checkboxValue'];
-$datatype = $_POST['datatype'];
+//$newcmid = $_POST['newcmid'];
+//$fieldid = $_POST['fieldid'];
+//$checkboxValue = $_POST['checkboxValue'];
+//$datatype = $_POST['datatype'];
 $textareaValue = $_POST['textareaValue'];
 $textareaId = $_POST['textareaId'];
 $textareaDataType = $_POST['textareaDataType'];
 
-//$textId = $_POST['textId'];
-//$inputvalue = $_POST['inputvalue'];
-//$textDataType = $_POST['textDataType'];
-
+$checkboxDatas = $_POST['checkboxDataArray'];
+$textareaDatas = $_POST['textareaDataArray'];
 $textDatas = $_POST['textDataArray'];
 $radioDatas = $_POST['radioDataArray'];
+$notRequiredDataArray = $_POST['notRequiredDataArray'];
 $dropdownDatas = $_POST['dropdownDataArray'];
 
-if ($textareaDataType) {
-    $data = new stdClass();
-    $data->cmid = $cmid;
-    $data->fieldid = $textareaId;
-    $data->student_id = $USER->id;
-    $data->value = $textareaValue;
-    $data->timecreated = time();
+if ($textareaDatas) {
+    foreach ($textareaDatas as $textareaData) {
+        if (!empty($textareaData['inputvalue'])) {
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->fieldid = $textareaData['id'];
+            $data->student_id = $USER->id;
+            $data->value = $textareaData['inputvalue'];
+            $data->timecreated = time();
 
-    $result = $DB->insert_record('coversheet_field_data', $data);
+            $result = $DB->insert_record('coversheet_field_data', $data);
+        }
+    }
 }
 if ($textDatas) {
     foreach ($textDatas as $textData) {
-        $data = new stdClass();
-        $data->cmid = $cmid;
-        $data->fieldid = $textData['id'];
-        $data->student_id = $USER->id;
-        $data->value = $textData['inputvalue'];
-        $data->timecreated = time();
-        $result = $DB->insert_record('coversheet_field_data', $data);
+        if (!empty($textData['inputvalue'])) {
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->fieldid = $textData['id'];
+            $data->student_id = $USER->id;
+            $data->value = $textData['inputvalue'];
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_data', $data);
+        }
     }
 
 }
@@ -75,26 +81,42 @@ if ($radioDatas) {
     }
 
 }
-
-if($dropdownDatas){
-    foreach ($dropdownDatas as $dropdownData){
+if ($notRequiredDataArray) {
+    foreach ($notRequiredDataArray as $newradioData) {
         $data = new stdClass();
         $data->cmid = $cmid;
-        $data->fieldid = $dropdownData['id'];
+        $data->fieldid = $newradioData['id'];
         $data->student_id = $USER->id;
-        $data->value = $dropdownData['value'];
+        $data->value = $newradioData['value'];
         $data->timecreated = time();
         $result = $DB->insert_record('coversheet_field_data', $data);
     }
+
 }
 
-if ($datatype === 'checkbox'){
-    $data = new stdClass();
-    $data->cmid = $cmid;
-    $data->fieldid = $fieldid;
-    $data->student_id = $USER->id;
-    $data->value = $checkboxValue;
-    $data->timecreated = time();
+if($dropdownDatas){
+    foreach ($dropdownDatas as $dropdownData){
+        if (!empty($dropdownData['value'])) {
+            $data = new stdClass();
+            $data->cmid = $cmid;
+            $data->fieldid = $dropdownData['id'];
+            $data->student_id = $USER->id;
+            $data->value = $dropdownData['value'];
+            $data->timecreated = time();
+            $result = $DB->insert_record('coversheet_field_data', $data);
+        }
+    }
+}
 
-    $result = $DB->insert_record('coversheet_field_data', $data);
+if ($checkboxDatas){
+    foreach ($checkboxDatas as $checkboxData) {
+        $data = new stdClass();
+        $data->cmid = $cmid;
+        $data->fieldid = $checkboxData['id'];
+        $data->student_id = $USER->id;
+        $data->value = $checkboxData['inputvalue'];
+        $data->timecreated = time();
+
+        $result = $DB->insert_record('coversheet_field_data', $data);
+    }
 }

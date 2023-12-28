@@ -251,9 +251,19 @@
                 action: action
             },
             success: function(response) {
-                location.reload();
-                $('#checkboxModal').modal('hide');
-                // alert('Data inserted successfully');
+                if (response === 'success') {
+                    console.log('success');
+                    location.reload();
+                    $('#checkboxModal').modal('hide');
+                }
+                else if (response === 'duplicate') {
+                    console.log('duplicate');
+                    alert('Shortname already exists. Choose a different shortname.');
+                }
+                else {
+                    console.log('failed');
+                    alert('Failed to insert data');
+                }
             },
             error: function(error) {
                 alert('Failed to insert data');
@@ -282,9 +292,19 @@
                 radioOptions: radioOptions
             },
             success: function(response) {
-                location.reload();
-                $('#radioModal').modal('hide');
-                // alert('Data inserted successfully');
+                if (response === 'success') {
+                    console.log('success');
+                    location.reload();
+                    $('#radioModal').modal('hide');
+                }
+                else if (response === 'duplicate') {
+                    console.log('duplicate');
+                    alert('Shortname already exists. Choose a different shortname.');
+                }
+                else {
+                    console.log('failed');
+                    alert('Failed to insert data');
+                }
             },
             error: function(error) {
                 alert('Failed to insert data');
@@ -299,7 +319,6 @@
         var name = $('#name_textarea').val();
         var requireTextarea = $('#requireTextarea').val();
         var action = 'textarea';
-
         $.ajax({
             type: 'POST',
             url: 'save_user_info.php',
@@ -311,12 +330,23 @@
                 action: action
             },
             success: function(response) {
-                location.reload();
-                $('#textareaModal').modal('hide');
-                // alert('Data inserted successfully');
+                console.log('Response:', response);
+                if (response === 'success') {
+                    console.log('success');
+                    location.reload();
+                    $('#textareaModal').modal('hide');
+                }
+                else if (response === 'duplicate') {
+                    console.log('duplicate');
+                    alert('Shortname already exists. Choose a different shortname.');
+                }
+                else {
+                    console.log('failed');
+                    alert('Failed to insert data');
+                }
             },
             error: function(error) {
-                alert('Failed to insert data');
+                alert('Failed to insert data hello');
             }
         });
     });
@@ -340,9 +370,19 @@
                 action: action
             },
             success: function(response) {
-                location.reload();
-                $('#textModal').modal('hide');
-                // alert('Data inserted successfully');
+                if (response === 'success') {
+                    console.log('success');
+                    location.reload();
+                    $('#textModal').modal('hide');
+                }
+                else if (response === 'duplicate') {
+                    console.log('duplicate');
+                    alert('Shortname already exists. Choose a different shortname.');
+                }
+                else {
+                    console.log('failed');
+                    alert('Failed to insert data');
+                }
             },
             error: function(error) {
                 alert('Failed to insert data');
@@ -371,8 +411,19 @@
                 dropdownList: dropdownList
             },
             success: function(response) {
-                location.reload();
-                $('#dropdownModal').modal('hide');
+                if (response === 'success') {
+                    console.log('success');
+                    location.reload();
+                    $('#textareaModal').modal('hide');
+                }
+                else if (response === 'duplicate') {
+                    console.log('duplicate');
+                    alert('Shortname already exists. Choose a different shortname.');
+                }
+                else {
+                    console.log('failed');
+                    alert('Failed to insert data');
+                }
             },
             error: function(error) {
                 alert('Failed to insert data');
