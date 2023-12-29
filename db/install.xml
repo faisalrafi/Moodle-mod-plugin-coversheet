@@ -70,6 +70,7 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="Unique identifier" />
                 <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="CMID" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Student id" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="attempt" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Attempt id" SEQUENCE="false" />
                 <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="declaration" TYPE="text" LENGTH="10" NOTNULL="true" COMMENT="declaration of student" SEQUENCE="false" />
                 <FIELD NAME="date" TYPE="text" LENGTH="10" NOTNULL="true" COMMENT="Date of " SEQUENCE="false" />
@@ -122,6 +123,7 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" COMMENT="Unique identifier" />
                 <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="CMID" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="fieldid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Field Id" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="attempt" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Attempt id" SEQUENCE="false" />
                 <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Student id" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="value" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="Field value"/>
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
@@ -138,6 +140,7 @@
                 <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="CMID" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="reqid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" COMMENT="Requirements Id" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Student id" DEFAULT="0" SEQUENCE="false" />
+                <FIELD NAME="attempt_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Attempt id" SEQUENCE="false" />
                 <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="each resource status" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
             </FIELDS>
