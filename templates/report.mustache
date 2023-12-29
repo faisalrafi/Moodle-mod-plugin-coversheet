@@ -37,20 +37,22 @@ Back
         {{/resources}}
     </ul>
     <hr>
-    <h3 class="report-heading">Feedback</h3>
-    <label for="overallResult">Overall Result:</label>
-    <input type="text" id="overallResult" name="overallResult" class="feedback-area">
-    <label for="comments">Comments:</label>
-    <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
-    <div class="d-flex">
-        <label>Satisfactory:</label>
-        <input type="checkbox" id="satisfactoryCheckbox" name="satisfactoryCheckbox" class="ml-3">
-    </div>
-    <div class="d-flex">
-        <label>Not Satisfactory:</label>
-        <input type="checkbox" id="notSatisfactoryCheckbox" name="notSatisfactoryCheckbox" class="ml-3">
-    </div>
-    <hr>
+    {{#gradingEnabled}}
+        <h3 class="report-heading">Feedback</h3>
+        <label for="overallResult">Overall Result:</label>
+        <input type="text" id="overallResult" name="overallResult" class="feedback-area">
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
+        <div class="d-flex">
+            <label>Satisfactory:</label>
+            <input type="checkbox" id="satisfactoryCheckbox" name="satisfactoryCheckbox" class="ml-3">
+        </div>
+        <div class="d-flex">
+            <label>Not Satisfactory:</label>
+            <input type="checkbox" id="notSatisfactoryCheckbox" name="notSatisfactoryCheckbox" class="ml-3">
+        </div>
+        <hr>
+    {{/gradingEnabled}}
     <h3 class="report-heading">Student Extra Information</h3>
     {{#datas}}
         {{#datatype}}

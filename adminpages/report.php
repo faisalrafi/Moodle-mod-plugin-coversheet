@@ -74,11 +74,19 @@ foreach ($datas as $data) {
 
 $currentdate = date('d F Y');
 
+$instance = $DB->get_record('course_modules', array('id' => $id));
+$grading_enabled = $DB->get_record('coversheet', array('id' => $instance->instance));
+
+if ($$grading_enabled->wantgrade == 1) {
+    
+}
+
 $display = [
     'contents' => array_values($contents),
     'resources' => array_values($resources),
     'feedbacks' => array_values($feedback),
     'datas' => array_values($datas),
+    'gradingEnabled' => $grading_enabled->wantgrade,
     'cmid' => $id,
     'studentid' => $studentid,
     'currentDate' => $currentdate,
