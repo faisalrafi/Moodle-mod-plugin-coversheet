@@ -41,6 +41,7 @@ Back
         <h3 class="report-heading">Feedback</h3>
         {{#gradeItem}}
             {{#scaleid}}
+                <input type="hidden" id="gradeType" value="2">
                 <label for="overallScale">Overall Scale:</label>
                 {{#scaleObjects}}
                     <div class="form-check">
@@ -52,6 +53,7 @@ Back
                 {{/scaleObjects}}
             {{/scaleid}}
             {{^scaleid}}
+                <input type="hidden" id="gradeType" value="1">
                 <label for="overallPoints">Overall Points:</label>
                 <input type="number" id="overallPoints" name="overallPoints" class="feedback-area">
             {{/scaleid}}
@@ -60,6 +62,9 @@ Back
         <label class="mt-3" for="comments">Comments:</label>
         <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
         <hr>
+    {{/gradingEnabled}}
+    {{^gradingEnabled}}
+        <input type="hidden" id="gradeType" value="0">
     {{/gradingEnabled}}
     <h3 class="report-heading">Student Extra Information</h3>
     {{#datas}}
@@ -141,19 +146,29 @@ Back
 
     document.getElementById("save").addEventListener("click", function(event){
         event.preventDefault();
-        var overall_result = $("#overallResult").val();
+        var gradeType = $("#gradeType").val();
+        var finalGrade = -1;
         var comment = $("#comments").val();
         var isSatisfactory = $("#satisfactoryCheckbox").is(":checked") ? 1 : 0;
         var teacher_name = $("#teacher_name").val();
         var cmid = $('#cmidContainer').data('cmid');
         var studentid = $('#stu_id').data('studentid');
 
+        if (gradeType == 1) {
+            finalGrade = $("#overallPoints").val();
+        } else if (gradeType == 2) {
+            finalGrade = $('input[name="scaleRadio"]:checked').val();
+        }
+
         if (signaturePad.isEmpty()) {
             alert("Please provide a signature first.");
         }
         else if (!teacher_name) {
             alert("Please provide your name.");
-        }
+        } 
+        else if (gradeType != 0 && (!finalGrade || finalGrade == "")) {
+            alert("Please provide overall feedback.");
+        } 
         else {
             var signatureData = signaturePad.toDataURL();
             var checkedResources = [];
@@ -162,19 +177,18 @@ Back
                 checkedResources.push(resourceid);
             });
             // console.log(checkedResources);
-            saveFeedback(overall_result, comment, isSatisfactory, signatureData, teacher_name, cmid, studentid, checkedResources);
-            $("#clear, #save").hide();
+            saveFeedback(gradeType, finalGrade, comment, signatureData, teacher_name, cmid, studentid, checkedResources);
         }
     });
 
-    function saveFeedback(overall_result, comment, isSatisfactory, signatureData, teacher_name, cmid, studentid, checkedResources) {
+    function saveFeedback(gradeType, finalGrade, comment, signatureData, teacher_name, cmid, studentid, checkedResources) {
         $.ajax({
             type: "POST",
             url: "save_feedback.php", // Create a new PHP file for handling the saving logic
             data: {
-                overall_result: overall_result,
+                grade_type: gradeType,
+                final_grade: finalGrade,
                 comment: comment,
-                isSatisfactory: isSatisfactory,
                 signatureData: signatureData,
                 teacherName: teacher_name,
                 cmid: cmid,
@@ -182,9 +196,13 @@ Back
                 checkedResources: checkedResources
             },
             success: function(response) {
-                alert(response);
+                alert(response['message']);
+                if (response['message'] == "Success") {
+                    $("#clear, #save").hide();
+                }
             },
-            error: function() {
+            error: function(response) {
+                console.log(response);
                 alert('Failed to insert data');
             }
         });

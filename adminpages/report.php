@@ -75,25 +75,21 @@ foreach ($datas as $data) {
 $currentdate = date('d F Y');
 
 $instance = $DB->get_record('course_modules', array('id' => $id));
-$grading_enabled = $DB->get_record('coversheet', array('id' => $instance->instance));
 
-$wantgrade = 0;
-
-if ($grading_enabled->wantgrade == 1)
-
-
-if ($grading_enabled->wantgrade == 1) {
-    $gradeitem = grade_item::fetch(array('itemtype' => 'mod',
-                    'itemmodule' => 'coversheet',
-                    'iteminstance' => $instance->instance,
-                    'itemnumber' => 0,
-                    'courseid' => $instance->course));
+$gradeitem = grade_item::fetch(array('itemtype' => 'mod',
+                'itemmodule' => 'coversheet',
+                'iteminstance' => $instance->instance,
+                'itemnumber' => 0,
+                'courseid' => $instance->course));
 
     // echo $gradeitem->gradetype ."<br>";
     // echo $gradeitem->grademax ."<br>";
     // echo $gradeitem->grademin ."<br>";
     // echo $gradeitem->scaleid ."<br>";   
+
+$grading_enabled = false;   
     
+if ($gradeitem && $gradeitem->gradetype > 0) {
     
     if ($gradeitem->scaleid) {
         $scales = grade_scale::fetch(array('id' => $gradeitem->scaleid))->load_items();
@@ -107,6 +103,7 @@ if ($grading_enabled->wantgrade == 1) {
 
         $gradeitem->scaleObjects = $scaleObjects;
     } 
+    $grading_enabled = true;
 }
 
 $display = [
@@ -114,7 +111,7 @@ $display = [
     'resources' => array_values($resources),
     'feedbacks' => array_values($feedback),
     'datas' => array_values($datas),
-    'gradingEnabled' => $grading_enabled->wantgrade,
+    'gradingEnabled' => $grading_enabled,
     'gradeItem' => $gradeitem,
     'cmid' => $id,
     'studentid' => $studentid,
