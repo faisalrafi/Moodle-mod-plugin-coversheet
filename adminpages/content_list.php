@@ -32,7 +32,7 @@ require_login();
 $context = context_module::instance($cmid);
 $PAGE->set_url('/mod/coversheet/adminpages/content_list.php', array('id' => $cmid));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title("Content List");
+$PAGE->set_title(get_string('contentslist', 'coversheet'));
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 

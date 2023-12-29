@@ -34,7 +34,7 @@ require_login();
 
 $PAGE->set_url('/mod/coversheet/adminpages/update_resource.php', array('id' => $id, 'cmid' => $cmid, 'action' => $action));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title("Update Resource");
+$PAGE->set_title(get_string('resourceupdatetitle', 'coversheet'));
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 $redirect_url = new moodle_url('/mod/coversheet/adminpages/resource_list.php', ['id' => $cmid]);
@@ -43,19 +43,19 @@ class edit_resource_form extends moodleform {
     protected function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('text', 'resource', 'Resource', array('size' => '100%'));
+        $mform->addElement('text', 'resource', get_string('formresource', 'coversheet'), array('size' => '100%'));
         $mform->setType('resource', PARAM_TEXT);
 
-        $this->add_action_buttons('Cancel', 'Update Resource');
+        $this->add_action_buttons(get_string('cancel', 'coversheet'), get_string('saveresource', 'coversheet'));
     }
 }
 
-if($action === 'delete') {
+if($action === get_string('deleteaction', 'coversheet')) {
     $fields = $DB->get_record('coversheet_requirements', ['id' => $id]);
 //    var_dump($fields); die();
     $DB->delete_records('coversheet_reqcheck', ['reqid' => $fields->id]);
     $DB->delete_records('coversheet_requirements', ['id' => $id]);
-    redirect(($redirect_url), 'Successfully Deleted the resource');
+    redirect(($redirect_url), get_string('deletemsgresource', 'coversheet'));
 }
 else {
     $form = new edit_resource_form(new moodle_url('/mod/coversheet/adminpages/update_resource.php', array('id' => $id, 'cmid' => $cmid, 'action' => $action)));
@@ -63,7 +63,7 @@ else {
     $form->set_data($fieldData);
 
     if ($form->is_cancelled()) {
-        redirect($redirect_url,'Cancelled the form');
+        redirect($redirect_url, get_string('cancelmsg', 'coversheet'));
     } elseif ($data = $form->get_data()) {
         $resource = new stdClass();
         $resource->id = $id;
@@ -71,7 +71,7 @@ else {
         $resource->timemodified = time();
 
         $DB->update_record('coversheet_requirements', $resource);
-        redirect($redirect_url, 'Resource Updated');
+        redirect($redirect_url, get_string('updatesuccess', 'coversheet'));
     }
 }
 echo $OUTPUT->header();

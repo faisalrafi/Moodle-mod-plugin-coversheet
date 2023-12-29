@@ -27,9 +27,21 @@
 <!--</div>-->
 
 <h5 class="mt-4">Student Submissions:</h5>
-{{#details}}
-    <a href="{{webroot}}/mod/coversheet/adminpages/report.php?id={{cmid}}&studentid={{student_id}}" class=" btn student-link">
-        {{candidate_name}}
-    </a>
-    <br>
-{{/details}}
+<table class="styled-table mx-auto w-75">
+    <thead>
+    <tr>
+        <th class="text-center">Name</th>
+        <th class="text-center">Report</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#details}}
+    <tr>
+        <td class="text-center">{{candidate_name}}</td>
+        <td class="text-center">
+            <a href="{{webroot}}/mod/coversheet/adminpages/report.php?id={{cmid}}&studentid={{student_id}}" class=" btn btn-sm student-link">Report</a>
+        </td>
+    </tr>
+    {{/details}}
+    </tbody>
+</table>
