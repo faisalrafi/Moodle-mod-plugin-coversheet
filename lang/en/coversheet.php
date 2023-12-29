@@ -30,11 +30,53 @@ $string['schedule:view'] = 'View Coversheet information';
 
 $string['pageinfo'] = 'Please enter page info';
 $string['placeholder'] = 'Enter Page Info';
+// Title of All Page.
 $string['viewtitle'] = 'Coversheet';
+$string['updatetitle'] = 'Coversheet - Update content';
+$string['userinfotitle'] = 'Coversheet - User Information';
+$string['resourcetitle'] = 'Coversheet - Resource List';
+$string['resourceupdatetitle'] = 'Update Resource';
+$string['addresourcetitle'] = 'Coversheet - Add Resource';
+$string['addcontenttitle'] = 'Coversheet - Add Content';
+$string['reporttitle'] = 'Coversheet - Report';
+$string['uploadtemplatetitle'] = 'Coversheet - Templates';
+$string['addtemplatetitle'] = 'Coversheet - Add Template';
+$string['viewtemplate'] = 'View Template';
+
+$string['formelement'] = 'Content';
+
+// User Update Profile.
+$string['formdatatype'] = 'datatype';
+$string['formname'] = 'Name';
+$string['formshortname'] = 'Shortname';
+$string['formparam'] = 'Param';
+$string['formcancel'] = 'Cancel';
+$string['formsave'] = 'Update Profile Field';
+
+$string['deleteaction'] = 'delete';
+$string['deletemsg'] = 'Successfully Deleted the field and its data';
+$string['cancelmsg'] = 'Cancelled the form';
+$string['updatemsg'] = 'Profile Field Updated';
+
+// Content Update And Add.
+$string['updatedmsg'] = 'Content Updated Successfully';
+$string['deletedmsg'] = 'Content Deleted Successfully';
 $string['contentslist'] = 'Contents List';
 $string['userinfo'] = 'Add User Information';
 $string['resourceslist'] = 'Resources List';
 $string['uploadtemplate'] = 'Templates';
+$string['addcontentrule'] = 'Please enter the content';
+$string['addcontentruletype'] = 'required';
+
+// Resource Update And Add.
+$string['cancel'] = 'Cancel';
+$string['formresource'] = 'Resource';
+$string['saveresource'] = 'Update Resource';
+$string['deletemsgresource'] = 'Successfully Deleted the resource';
+$string['updatesuccess'] = 'Resource Updated Successfully';
+$string['addresourcemsg'] = 'Resource added successfully, check the resource list.';
+$string['btnresource'] = 'Resource List';
+
 
 $string['coversheet:view'] = 'View';
 $string['coversheet:viewpage'] = 'View Page';
@@ -43,4 +85,14 @@ $string['wantgrading'] = 'Want grading system for this coversheet?';
 
 $string['template_title'] = 'Enter Title of this template';
 $string['template_active'] = 'Make this template active';
+$string['templateaddruletitle'] = 'Please enter the title';
+$string['templateaddrule'] = 'Please enter the template';
 $string['template_missing'] = '<br><h4>No Active Template Found!!!<h4><br><h5>Please Activate any of your templates</h5><br>';
+
+$string['checkbox'] = 'checkbox';
+$string['textarea'] = 'textarea';
+$string['text'] = 'text';
+$string['radio'] = 'radio';
+$string['dropdown'] = 'dropdown';
+
+$string['submissionsallowed'] = 'Submissions allowed';

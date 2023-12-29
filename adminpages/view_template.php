@@ -24,7 +24,7 @@
 
 require(__DIR__.'/../../../config.php');
 
-global $OUTPUT, $DB;
+global $OUTPUT, $DB, $PAGE, $CFG;
 
 $id = required_param("id", PARAM_INT);// Course_module ID, or.
 $cm = get_coursemodule_from_id('coversheet', $id, 0, false, MUST_EXIST);
@@ -34,7 +34,7 @@ require_login($course, true, $cm);
 
 $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/coversheet/adminpages/view_template.php', array('id' => $id));
-$PAGE->set_title("View Template");
+$PAGE->set_title(get_string('viewtemplate', 'coversheet'));
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();

@@ -32,7 +32,7 @@ require_login();
 $context = context_module::instance($cmid);
 $PAGE->set_url('/mod/coversheet/adminpages/user_information.php', array('id' => $cmid));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title("User Information");
+$PAGE->set_title(get_string('userinfotitle', 'coversheet'));
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();

@@ -23,7 +23,7 @@
  */
 global $DB, $PAGE, $OUTPUT, $CFG, $USER;
 require_once('../../config.php');
-//require_once('lib.php');
+require_once('lib.php');
 require_once($CFG->libdir . '/dmllib.php');
 
 $id = required_param('id', PARAM_INT);    // Course Module ID.
@@ -45,17 +45,7 @@ $hasCapabilityViewPage = has_capability('mod/coversheet:viewpage', $context);
 //var_dump($updated_date); die();
 if ($hasCapabilityViewPage) {
     echo $OUTPUT->header();
-//    $sql = "SELECT cc.id as contentid, cc.html FROM {coversheet_contents} cc";
-//    $contents = $DB->get_records_sql($sql);
-//
-//    foreach ($contents as $content) {
-//        $html = coversheet_prepare_html_data_for_view($content, $context);
-//    }
-//
-//    $submission_details = $DB->get_record('coversheet_submissions', ['cmid' => $id]);
-//    $date = $submission_details->submission_date;
-//    $submission_date = userdate($date, get_string('strftimedate'));
-//    $competency = $submission_details->competency;
+
     $sql = "SELECT * FROM {coversheet_attempts} ca WHERE ca.cmid = :cmid";
     $details = $DB->get_records_sql($sql, ['cmid' => $id]);
 //    echo "<pre>";var_dump($details); die();
@@ -86,28 +76,17 @@ if ($hasCapabilityViewPage) {
     $info = $DB->get_records_sql($sql);
 //    echo "<pre>";var_dump($info);die();
     foreach ($info as $field) {
-        $field->isCheckbox = ($field->datatype === 'checkbox');
-        $field->isTextarea = ($field->datatype === 'textarea');
-        $field->isTextinput = ($field->datatype === 'text');
-        $field->isRadio = ($field->datatype === 'radio');
+        $field->isCheckbox = ($field->datatype === get_string('checkbox', 'coversheet'));
+        $field->isTextarea = ($field->datatype === get_string('textarea', 'coversheet'));
+        $field->isTextinput = ($field->datatype === get_string('text', 'coversheet'));
+        $field->isRadio = ($field->datatype === get_string('radio', 'coversheet'));
 
         $field->isRequired = ($field->required == 1);
 
         if ($field->isRadio) {
             $field->radioOptions = explode(',', $field->param);
-//            var_dump($field->radioOptions); die();
-
-//            if($field->isRequired) {
-//                // Add an 'isFirst' property to the first radio option
-//                foreach ($field->radioOptions as $index => $option) {
-//                    $field->radioOptions[$index] = [
-//                        'value' => $option,
-//                        'isFirst' => ($index === 0),
-//                    ];
-//                }
-//            }
         }
-        $field->isDropdown = ($field->datatype === 'dropdown');
+        $field->isDropdown = ($field->datatype === get_string('dropdown', 'coversheet'));
         if ($field->isDropdown) {
             $field->dropdownList = explode(',', $field->param);
         }
@@ -127,7 +106,6 @@ if ($hasCapabilityViewPage) {
         'webroot' => $CFG->wwwroot,
         'infos' => array_values($info),
         'results' => array_values($results),
-//        'requiredFields' => json_encode($requiredFields),
     ];
     echo $OUTPUT->render_from_template('mod_coversheet/view_student', $display);
 

@@ -34,7 +34,7 @@ require_login();
 $context = context_module::instance($id);
 $PAGE->set_url('/mod/coversheet/adminpages/report.php', array('id' => $id));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title("Report");
+$PAGE->set_title(get_string('reporttitle', 'coversheet'));
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();

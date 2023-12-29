@@ -34,12 +34,12 @@ require_login();
 
 $PAGE->set_url('/mod/coversheet/adminpages/add_resource.php', array('id' => $cmid));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title("Add Submission Details");
+$PAGE->set_title(get_string('addresourcetitle', 'coversheet'));
 
 $form = new add_resource_form(new moodle_url('/mod/coversheet/adminpages/add_resource.php', array('id' => $cmid)));
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/mod/coversheet/view.php', array('id' => $cmid)));
+    redirect(new moodle_url('/mod/coversheet/resource_list.php', array('id' => $cmid)));
 } elseif ($data = $form->get_data()) {
     $record = new stdClass();
     $record->cmid = $cmid;
@@ -50,7 +50,7 @@ if ($form->is_cancelled()) {
 
     $DB->insert_record('coversheet_requirements', $record);
 
-    redirect(new moodle_url('/mod/coversheet/adminpages/resource_list.php', array('id' => $cmid)), 'Resource added successfully, check the resource list.');
+    redirect(new moodle_url('/mod/coversheet/adminpages/resource_list.php', array('id' => $cmid)), get_string('addresourcemsg', 'coversheet'));
 
 }
 
