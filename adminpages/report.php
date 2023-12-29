@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-global $DB, $PAGE, $OUTPUT, $CFG;
+global $DB, $PAGE, $OUTPUT, $CFG, $COURSE;
 require(__DIR__ . '/../../../config.php');
 require_once("../lib.php");
 require_once("$CFG->libdir/formslib.php");
@@ -77,8 +77,36 @@ $currentdate = date('d F Y');
 $instance = $DB->get_record('course_modules', array('id' => $id));
 $grading_enabled = $DB->get_record('coversheet', array('id' => $instance->instance));
 
-if ($$grading_enabled->wantgrade == 1) {
+$wantgrade = 0;
+
+if ($grading_enabled->wantgrade == 1)
+
+
+if ($grading_enabled->wantgrade == 1) {
+    $gradeitem = grade_item::fetch(array('itemtype' => 'mod',
+                    'itemmodule' => 'coversheet',
+                    'iteminstance' => $instance->instance,
+                    'itemnumber' => 0,
+                    'courseid' => $instance->course));
+
+    // echo $gradeitem->gradetype ."<br>";
+    // echo $gradeitem->grademax ."<br>";
+    // echo $gradeitem->grademin ."<br>";
+    // echo $gradeitem->scaleid ."<br>";   
     
+    
+    if ($gradeitem->scaleid) {
+        $scales = grade_scale::fetch(array('id' => $gradeitem->scaleid))->load_items();
+
+        for ($i = 0; $i < count($scales); $i++) {
+            $scaleObject = new stdClass();
+            $scaleObject->value = $i + 1;
+            $scaleObject->data = $scales[$i];
+            $scaleObjects[] = $scaleObject;
+        }
+
+        $gradeitem->scaleObjects = $scaleObjects;
+    } 
 }
 
 $display = [
@@ -87,6 +115,7 @@ $display = [
     'feedbacks' => array_values($feedback),
     'datas' => array_values($datas),
     'gradingEnabled' => $grading_enabled->wantgrade,
+    'gradeItem' => $gradeitem,
     'cmid' => $id,
     'studentid' => $studentid,
     'currentDate' => $currentdate,

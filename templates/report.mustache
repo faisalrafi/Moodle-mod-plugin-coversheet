@@ -39,18 +39,26 @@ Back
     <hr>
     {{#gradingEnabled}}
         <h3 class="report-heading">Feedback</h3>
-        <label for="overallResult">Overall Result:</label>
-        <input type="text" id="overallResult" name="overallResult" class="feedback-area">
-        <label for="comments">Comments:</label>
+        {{#gradeItem}}
+            {{#scaleid}}
+                <label for="overallScale">Overall Scale:</label>
+                {{#scaleObjects}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="scaleRadio" value="{{value}}">
+                        <label class="form-check-label">
+                            {{data}}
+                        </label>
+                    </div>
+                {{/scaleObjects}}
+            {{/scaleid}}
+            {{^scaleid}}
+                <label for="overallPoints">Overall Points:</label>
+                <input type="number" id="overallPoints" name="overallPoints" class="feedback-area">
+            {{/scaleid}}
+        {{/gradeItem}}
+        
+        <label class="mt-3" for="comments">Comments:</label>
         <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
-        <div class="d-flex">
-            <label>Satisfactory:</label>
-            <input type="checkbox" id="satisfactoryCheckbox" name="satisfactoryCheckbox" class="ml-3">
-        </div>
-        <div class="d-flex">
-            <label>Not Satisfactory:</label>
-            <input type="checkbox" id="notSatisfactoryCheckbox" name="notSatisfactoryCheckbox" class="ml-3">
-        </div>
         <hr>
     {{/gradingEnabled}}
     <h3 class="report-heading">Student Extra Information</h3>
