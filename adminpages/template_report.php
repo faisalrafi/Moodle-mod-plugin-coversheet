@@ -24,7 +24,7 @@
 
 require(__DIR__.'/../../../config.php');
 
-global $OUTPUT, $DB;
+global $OUTPUT, $DB, $PAGE, $CFG;
 
 $id = required_param("id", PARAM_INT);// Course_module ID, or.
 $studentid = required_param("studentid", PARAM_INT); // Student ID

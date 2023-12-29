@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+define('COVERSHEET_MAX_ATTEMPT_OPTION', 10);
+
 function coversheet_add_instance(stdClass $data, mod_coversheet_mod_form $mform = null): int
 {
     global $DB;
@@ -62,7 +64,7 @@ function coversheet_update_instance(stdClass $data, mod_coversheet_mod_form $mfo
         $table->wantgrade = $data->wantgrade;
         coversheet_grade_item_update($data);
     }
-    
+    $table->submissions = $data->submissions;
     $table->timecreated = time();
     $table->timemodified = time();
     $table->id = $DB->update_record('coversheet', $table);

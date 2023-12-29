@@ -36,18 +36,17 @@ $moduleinstance = $DB->get_record('coversheet', array('id' => $cm->instance), '*
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/coversheet/adminpages/add_content.php', array('id' => $id));
-$PAGE->set_title("Add Content");
-$PAGE->set_heading("Add Content");
+$PAGE->set_title(get_string('addcontenttitle', 'coversheet'));
 
 class add_content_form extends moodleform {
     public function definition() {
 
         $editoroption = array("subdirs"=>1, "maxfiles" => -1);
         $mform = $this->_form;
-        $mform->addElement('editor', 'html_editor', 'Content', null, $editoroption);
+        $mform->addElement('editor', 'html_editor', get_string('formelement', 'coversheet'), null, $editoroption);
         $mform->setType('html_editor', PARAM_RAW);
         $mform->setDefault('html_editor', $this->_customdata['html'] ?? '');
-        $mform->addRule('html_editor', 'Please enter the content', 'required');
+        $mform->addRule('html_editor', get_string('addcontentrule', 'coversheet'), get_string('addcontentruletype', 'coversheet'));
 
         $this->add_action_buttons();
     }
@@ -55,7 +54,7 @@ class add_content_form extends moodleform {
 
 $mform = new add_content_form(new moodle_url('/mod/coversheet/adminpages/add_content.php', array('id' => $id)));
 if ($mform->is_cancelled()) {
-    redirect(new moodle_url('/mod/coversheet/view.php', array('id' => $id)));
+    redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)));
 }
 elseif ($data = $mform->get_data()) {
     $phase_id = coversheet_insert_content($data, $context, $id);

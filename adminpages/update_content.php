@@ -39,7 +39,7 @@ require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
 $PAGE->set_url('/mod/coversheet/update_content.php', array('id' => $id, 'contentid' => $contentid));
-$PAGE->set_title("Coversheet - Update content");
+$PAGE->set_title(get_string('updatetitle', 'coversheet'));
 
 class update_content_form extends moodleform
 {
@@ -47,7 +47,7 @@ class update_content_form extends moodleform
     {
         $mform = $this->_form;
 
-        $mform->addElement('editor', 'html_editor', 'Content', null, [
+        $mform->addElement('editor', 'html_editor', get_string('formelement', 'coversheet'), null, [
             'maxfiles' => EDITOR_UNLIMITED_FILES,
             'accepted_types' => '*',
             'maxbytes' => 0, // Maximum file size in bytes (1MB)
@@ -75,11 +75,11 @@ if ($mform->is_cancelled()) {
 
     $DB->update_record('coversheet_contents', $html);
 
-    redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)), 'Content Updated Successfully');
+    redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)), get_string('updatedmsg', 'coversheet'));
 }
 if ($action === 'delete'){
     $DB->delete_records('coversheet_contents',['id' => $contentid]);
-    redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)), 'Content Deleted Successfully');
+    redirect(new moodle_url('/mod/coversheet/adminpages/content_list.php', array('id' => $id)), get_string('deletedmsg', 'coversheet'));
 }
 echo $OUTPUT->header();
 if ($contentid) {

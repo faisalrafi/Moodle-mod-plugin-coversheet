@@ -184,10 +184,6 @@
             var checkboxDataArray = [];
 
             var signatureData = signaturePad.toDataURL();
-
-            // var selectedRadioid = $("input[type='radio']:checked").data('id');
-            // // var selectedRadioid = $("input[type='radio']:checked[required]").attr('id');
-            // console.log(selectedRadioid);
             var selectedRadioid = $("input[type='radio']:checked").map(function() {
                 return {
                     id: $(this).data('id'),
@@ -195,16 +191,14 @@
                 };
             }).get();
 
-            // console.log(selectedRadioid);
             if(selectedRadioid.length === 0) {
                 isRequiredFieldEmpty = true;
                 alert('Please select required radio button.');
             } else {
-                // alert('kieeeee');
                 var isAnyRequired = selectedRadioid.some(function(radio) {
                     return radio.required;
                 });
-                // console.log(isAnyRequired);
+
                 if (!isAnyRequired) {
                     isRequiredFieldEmpty = true;
                     alert('Please select a required radio button.');
@@ -213,9 +207,6 @@
                         var id = radio.id;
                         var datatype = $("input[type='radio'][data-id='" + id + "']").data('datatype');
                         var value = $("input[type='radio'][data-id='" + id + "']:checked").val();
-                        // console.log("ID:", id);
-                        // console.log("Datatype:", datatype);
-                        // console.log("Value:", value);
 
                         if (radio.required) {
                             var requiredData = {
@@ -235,40 +226,6 @@
                     });
                 }
             }
-            // console.log("Required Data:", radioDataArray);
-            // console.log("Not Required Data:", notRequiredDataArray);
-            // var selectedRadioDatatype = $("input[type='radio']:checked").data('datatype');
-            // var selectedRadioValue = $("input[type='radio']:checked").val();
-            // var isRadioRequired = $("input[type='radio']:checked").prop('required');
-            // if(isRadioRequired === undefined || isRadioRequired === false || selectedRadioid === undefined){
-            //     isRequiredFieldEmpty = true;
-            //     alert('Please select required radio button.');
-            // }
-            // if (isRadioRequired === false && flag === false){
-            //     flag = true;
-            //     var newradioData = {
-            //         id: selectedRadioid,
-            //         datatype: selectedRadioDatatype,
-            //         inputvalue: selectedRadioValue
-            //     };
-            //
-            //     newradioDataArray.push(newradioData);
-            // }
-            // if(isRadioRequired === true) {
-            //     // console.log(selectedRadioid);
-            //     // console.log(selectedRadioDatatype);
-            //     // console.log("Selected Radio Value:", selectedRadioValue);
-            //     var radioData = {
-            //         id: selectedRadioid,
-            //         datatype: selectedRadioDatatype,
-            //         inputvalue: selectedRadioValue
-            //     };
-            //
-            //     radioDataArray.push(radioData);
-            // }
-            // console.log(radioDataArray);
-            // console.log(newradioDataArray);
-
 
             $('.textareainput').each(function () {
                 var requiredtextarea = $(this).prop('required');
@@ -354,7 +311,6 @@
                     return false;
                 }
                 else {
-                    // alert('OKAY');
                     var dropdownData = {
                         id: dropdownid,
                         datatype: dropdownDataType,
@@ -373,8 +329,8 @@
                 saveNonrequiredData(cmid,notRequiredDataArray)
                 saveInfoData(cmid, checkboxDataArray, textareaDataArray,
                         textDataArray, radioDataArray, dropdownDataArray)
-                // saveSignatureToDatabase(signatureData, student_name, cmid, date);
-                // $("#clear, #save").hide();
+                saveSignatureToDatabase(signatureData, student_name, cmid, date);
+                $("#clear, #save").hide();
             }
         }
     });
@@ -389,7 +345,6 @@
                 textareaDataArray: textareaDataArray,
                 textDataArray: textDataArray,
                 radioDataArray: radioDataArray,
-                // newradioDataArray: newradioDataArray,
                 dropdownDataArray: dropdownDataArray,
             },
             success: function() {
@@ -408,12 +363,6 @@
                 cmid: cmid,
                 notRequiredDataArray: notRequiredDataArray,
             },
-            // success: function() {
-            //     alert('Data Saved');
-            // },
-            // error: function() {
-            //     alert('Failed to insert data');
-            // }
         });
     }
     function saveSignatureToDatabase(signatureData, student_name, cmid, date) {

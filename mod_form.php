@@ -83,6 +83,13 @@ class mod_coversheet_mod_form extends moodleform_mod {
         $mform->setDefault($gradefieldname, $CFG->gradepointdefault);
 
         $mform->hideIf($gradefieldname, 'wantgrade', 'notchecked');
+        // Number of attempts.
+        $attemptoptions = ['0' => get_string('unlimited')];
+        for ($i = 1; $i <= COVERSHEET_MAX_ATTEMPT_OPTION; $i++) {
+            $attemptoptions[$i] = $i;
+        }
+        $mform->addElement('select', 'submissions', get_string('submissionsallowed', 'coversheet'),
+            $attemptoptions);
 
         $this->standard_coursemodule_elements();
 

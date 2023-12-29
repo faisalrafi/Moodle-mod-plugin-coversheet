@@ -42,27 +42,27 @@ class edit_field_form extends moodleform {
     protected function definition() {
         $mform = $this->_form;
 
-        $mform->addElement('hidden', 'datatype');
+        $mform->addElement('hidden', get_string('formdatatype', 'coversheet'));
         $mform->setType('datatype', PARAM_ALPHA);
 
-        $mform->addElement('text', 'name', 'Name');
+        $mform->addElement('text', 'name', get_string('formname', 'coversheet'));
         $mform->setType('name', PARAM_TEXT);
 
-        $mform->addElement('text', 'shortname', 'Shortname');
+        $mform->addElement('text', 'shortname', get_string('formshortname', 'coversheet'));
         $mform->setType('shortname', PARAM_TEXT);
 
-        $mform->addElement('text', 'param', 'Param');
+        $mform->addElement('text', 'param', get_string('formparam', 'coversheet'));
         $mform->setType('param', PARAM_TEXT);
 
-        $this->add_action_buttons('Cancel', 'Update Profile Field');
+        $this->add_action_buttons(get_string('formcancel', 'coversheet'), get_string('formsave', 'coversheet'));
     }
 }
 
-if($action === 'delete'){
+if($action === get_string('deleteaction', 'coversheet')){
     $fields = $DB->get_record('coversheet_field_type', ['id' => $id]);
     $DB->delete_records('coversheet_field_data', ['fieldid' => $fields->id]);
     $DB->delete_records('coversheet_field_type', ['id' => $id]);
-    redirect(($redirect_url), 'Successfully Deleted the field and its data');
+    redirect(($redirect_url), get_string('deletemsg', 'coversheet'));
 }
 else {
     $form = new edit_field_form(new moodle_url('/mod/coversheet/adminpages/update_profile.php', array('id' => $id, 'cmid' => $cmid, 'datatype' => $datatype, 'action' => $action)));
@@ -70,7 +70,7 @@ else {
     $form->set_data($fieldData);
 
     if ($form->is_cancelled()) {
-        redirect($redirect_url,'Cancelled the form');
+        redirect($redirect_url, get_string('cancelmsg', 'coversheet'));
     } elseif ($data = $form->get_data()) {
         $profile = new stdClass();
         $profile->id = $id;
@@ -80,7 +80,7 @@ else {
         $profile->timecreated = time();
 
         $DB->update_record('coversheet_field_type', $profile);
-        redirect($redirect_url, 'Profile Field Updated');
+        redirect($redirect_url, get_string('updatemsg', 'coversheet'));
     }
 }
 echo $OUTPUT->header();

@@ -36,8 +36,7 @@ $moduleinstance = $DB->get_record('coversheet', array('id' => $cm->instance), '*
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $PAGE->set_url('/mod/coversheet/adminpages/add_template.php', array('id' => $id));
-$PAGE->set_title("Add Template");
-$PAGE->set_heading("Add Template");
+$PAGE->set_title(get_string('addtemplatetitle', 'coversheet'));
 
 class add_template_form extends moodleform {
     public function definition() {
@@ -52,14 +51,14 @@ class add_template_form extends moodleform {
 
         $mform->addElement('text', 'title', get_string('template_title', 'coversheet'), array());
         $mform->setType('title', PARAM_TEXT);
-        $mform->addRule('title', 'Please enter the title', 'required');
+        $mform->addRule('title', get_string('templateaddruletitle', 'coversheet'), get_string('addcontentruletype', 'coversheet'));
 
         $editoroption = array("subdirs"=>1, "maxfiles" => -1);
 
         $mform->addElement('editor', 'template_editor', 'Template', null, $editoroption, 'rows="20" cols="50"');
         $mform->setType('template_editor', PARAM_RAW);
         $mform->setDefault('template_editor', $this->_customdata['template'] ?? '');
-        $mform->addRule('template_editor', 'Please enter the template', 'required');
+        $mform->addRule('template_editor', get_string('templateaddrule', 'coversheet'), get_string('addcontentruletype', 'coversheet'));
 
         $mform->addElement('checkbox', 'active', get_string('template_active', 'coversheet'));
 
