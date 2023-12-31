@@ -18,7 +18,10 @@
 
     }
 }}
-
+<div>
+    <h5 class="text-center mb-5">Submissions Allowed: {{submissions}}</h5>
+</div>
+<hr>
 <div class="w-100">
     {{{html}}}
 </div>
@@ -44,7 +47,7 @@
             <div class="textarea-container my-3 d-flex">
                 <label for="{{name}}">{{name}}:</label>
                 {{#isRequired}}
-                    <textarea class="form-control textareainput" name="{{name}}" id="" rows="3" name="bi" data-name="{{name}}" data-id="{{id}}" data-datatype="{{datatype}}" required></textarea>
+                    <textarea class="form-control textareainput" name="{{name}}" id="" rows="3" data-name="{{name}}" data-id="{{id}}" data-datatype="{{datatype}}" required></textarea>
                 {{/isRequired}}
                 {{^isRequired}}
                     <textarea class="form-control textareainput" name="{{name}}" id="" rows="3" data-name="{{name}}" data-id="{{id}}" data-datatype="{{datatype}}"></textarea>
@@ -158,11 +161,21 @@
 
     document.getElementById("save").addEventListener("click", function(event){
         event.preventDefault();
+        // console.log($("input[type='radio']:visible").length);
         var student_name = $("#student_name").val();
         var cmid = $('#cmidContainer').data('cmid');
         var date = $('#currentDate').val();
         var isRequiredFieldEmpty = false; // Flag to track if any required field is empty.
         var flag = false;
+        var hasRadioButtons = $("input[type='radio']:visible").length > 0;
+        console.log(hasRadioButtons);
+        // if (hasRadioButtons) {
+        //     // Your logic when there are radio buttons on the page
+        //     console.log("Page has radio buttons.");
+        // } else {
+        //     // Your logic when there are no radio buttons on the page
+        //     console.log("Page does not have radio buttons.");
+        // }
 
         if (signaturePad.isEmpty()) {
             alert("Please provide a signature first.");
@@ -184,6 +197,7 @@
             var checkboxDataArray = [];
 
             var signatureData = signaturePad.toDataURL();
+
             var selectedRadioid = $("input[type='radio']:checked").map(function() {
                 return {
                     id: $(this).data('id'),
@@ -191,41 +205,44 @@
                 };
             }).get();
 
-            if(selectedRadioid.length === 0) {
-                isRequiredFieldEmpty = true;
-                alert('Please select required radio button.');
-            } else {
-                var isAnyRequired = selectedRadioid.some(function(radio) {
-                    return radio.required;
-                });
-
-                if (!isAnyRequired) {
+            if(hasRadioButtons) {
+                if (selectedRadioid.length === 0) {
                     isRequiredFieldEmpty = true;
-                    alert('Please select a required radio button.');
+                    alert('Please select required radio button.');
                 } else {
-                    selectedRadioid.forEach(function(radio) {
-                        var id = radio.id;
-                        var datatype = $("input[type='radio'][data-id='" + id + "']").data('datatype');
-                        var value = $("input[type='radio'][data-id='" + id + "']:checked").val();
-
-                        if (radio.required) {
-                            var requiredData = {
-                                id: id,
-                                datatype: datatype,
-                                value: value
-                            };
-                            radioDataArray.push(requiredData);
-                        } else {
-                            var notRequiredData = {
-                                id: id,
-                                datatype: datatype,
-                                value: value
-                            };
-                            notRequiredDataArray.push(notRequiredData);
-                        }
+                    var isAnyRequired = selectedRadioid.some(function (radio) {
+                        return radio.required;
                     });
+
+                    if (!isAnyRequired) {
+                        isRequiredFieldEmpty = true;
+                        alert('Please select a required radio button.');
+                    } else {
+                        selectedRadioid.forEach(function (radio) {
+                            var id = radio.id;
+                            var datatype = $("input[type='radio'][data-id='" + id + "']").data('datatype');
+                            var value = $("input[type='radio'][data-id='" + id + "']:checked").val();
+
+                            if (radio.required) {
+                                var requiredData = {
+                                    id: id,
+                                    datatype: datatype,
+                                    value: value
+                                };
+                                radioDataArray.push(requiredData);
+                            } else {
+                                var notRequiredData = {
+                                    id: id,
+                                    datatype: datatype,
+                                    value: value
+                                };
+                                notRequiredDataArray.push(notRequiredData);
+                            }
+                        });
+                    }
                 }
             }
+
 
             $('.textareainput').each(function () {
                 var requiredtextarea = $(this).prop('required');
@@ -325,6 +342,12 @@
                 return;
             }
             else {
+                console.log(textDataArray);
+                console.log(textareaDataArray);
+                console.log(radioDataArray);
+                console.log(notRequiredDataArray);
+                console.log(dropdownDataArray);
+                console.log(checkboxDataArray);
 
                 saveNonrequiredData(cmid,notRequiredDataArray)
                 saveInfoData(cmid, checkboxDataArray, textareaDataArray,
@@ -348,7 +371,7 @@
                 dropdownDataArray: dropdownDataArray,
             },
             success: function() {
-                alert('Data Saved');
+                alert('All Data Saved');
             },
             error: function() {
                 alert('Failed to insert data');
@@ -363,6 +386,12 @@
                 cmid: cmid,
                 notRequiredDataArray: notRequiredDataArray,
             },
+            success: function() {
+                alert('Non Required radio Data Saved');
+            },
+            error: function() {
+                alert('Failed to insert non required radio data');
+            }
         });
     }
     function saveSignatureToDatabase(signatureData, student_name, cmid, date) {
@@ -376,10 +405,10 @@
                 date: date
             },
             success: function(response) {
-                alert(response);
+                alert('Signature Data Saved');
             },
             error: function() {
-                alert('Failed to insert data');
+                alert('Failed to insert signature data');
             }
         });
     }

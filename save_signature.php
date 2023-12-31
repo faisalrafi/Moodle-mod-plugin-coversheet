@@ -26,15 +26,16 @@ global $CFG, $USER, $DB;
 require_once('../../config.php'); // Adjust the path based on your Moodle configuration
 require_once($CFG->libdir . '/gradelib.php');
 
-$signature = $_POST['signatureData'];
-$studentName = $_POST['studentName'];
-$cmid = $_POST['cmid'];
-$date = $_POST['date'];
+$signature = $_POST['signatureData'] ?? '';
+$studentName = $_POST['studentName'] ?? '';
+$cmid = $_POST['cmid'] ?? '';
+$date = $_POST['date'] ?? '';
 $declaration = 'To be signed once the assessment is complete and ready for submission';
 
 $data = new stdClass();
 $data->cmid = $cmid; // Replace with the actual course module ID
 $data->student_id = $USER->id;
+$data->attempt = 1;
 $data->status = 1;
 $data->declaration = $declaration;
 $data->date = $date;

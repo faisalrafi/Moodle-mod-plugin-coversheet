@@ -25,28 +25,29 @@
 global $CFG, $USER, $DB;
 require_once('../../config.php');
 
-$cmid = $_POST['cmid'];
+$cmid = $_POST['cmid']?? '';
 //$newcmid = $_POST['newcmid'];
 //$fieldid = $_POST['fieldid'];
 //$checkboxValue = $_POST['checkboxValue'];
 //$datatype = $_POST['datatype'];
-$textareaValue = $_POST['textareaValue'];
-$textareaId = $_POST['textareaId'];
-$textareaDataType = $_POST['textareaDataType'];
+//$textareaValue = $_POST['textareaValue']?? '';
+//$textareaId = $_POST['textareaId']?? '';
+//$textareaDataType = $_POST['textareaDataType']?? '';
 
-$checkboxDatas = $_POST['checkboxDataArray'];
-$textareaDatas = $_POST['textareaDataArray'];
-$textDatas = $_POST['textDataArray'];
-$radioDatas = $_POST['radioDataArray'];
-$notRequiredDataArray = $_POST['notRequiredDataArray'];
-$dropdownDatas = $_POST['dropdownDataArray'];
+$checkboxDatas = $_POST['checkboxDataArray']?? [];
+$textareaDatas = $_POST['textareaDataArray']?? [];
+$textDatas = $_POST['textDataArray']?? [];
+$radioDatas = $_POST['radioDataArray']?? [];
+$notRequiredDataArray = $_POST['notRequiredDataArray']?? [];
+$dropdownDatas = $_POST['dropdownDataArray']?? [];
 
-if ($textareaDatas) {
+if (!empty($textareaDatas)) {
     foreach ($textareaDatas as $textareaData) {
         if (!empty($textareaData['inputvalue'])) {
             $data = new stdClass();
             $data->cmid = $cmid;
             $data->fieldid = $textareaData['id'];
+            $data->attempt = 1;
             $data->student_id = $USER->id;
             $data->value = $textareaData['inputvalue'];
             $data->timecreated = time();
@@ -55,12 +56,13 @@ if ($textareaDatas) {
         }
     }
 }
-if ($textDatas) {
+if (!empty($textDatas)) {
     foreach ($textDatas as $textData) {
         if (!empty($textData['inputvalue'])) {
             $data = new stdClass();
             $data->cmid = $cmid;
             $data->fieldid = $textData['id'];
+            $data->attempt = 1;
             $data->student_id = $USER->id;
             $data->value = $textData['inputvalue'];
             $data->timecreated = time();
@@ -69,11 +71,12 @@ if ($textDatas) {
     }
 
 }
-if ($radioDatas) {
+if (!empty($radioDatas)) {
     foreach ($radioDatas as $radioData) {
         $data = new stdClass();
         $data->cmid = $cmid;
         $data->fieldid = $radioData['id'];
+        $data->attempt = 1;
         $data->student_id = $USER->id;
         $data->value = $radioData['value'];
         $data->timecreated = time();
@@ -81,11 +84,12 @@ if ($radioDatas) {
     }
 
 }
-if ($notRequiredDataArray) {
+if (!empty($notRequiredDataArray)) {
     foreach ($notRequiredDataArray as $newradioData) {
         $data = new stdClass();
         $data->cmid = $cmid;
         $data->fieldid = $newradioData['id'];
+        $data->attempt = 1;
         $data->student_id = $USER->id;
         $data->value = $newradioData['value'];
         $data->timecreated = time();
@@ -94,12 +98,13 @@ if ($notRequiredDataArray) {
 
 }
 
-if($dropdownDatas){
+if(!empty($dropdownDatas)) {
     foreach ($dropdownDatas as $dropdownData){
         if (!empty($dropdownData['value'])) {
             $data = new stdClass();
             $data->cmid = $cmid;
             $data->fieldid = $dropdownData['id'];
+            $data->attempt = 1;
             $data->student_id = $USER->id;
             $data->value = $dropdownData['value'];
             $data->timecreated = time();
@@ -108,11 +113,12 @@ if($dropdownDatas){
     }
 }
 
-if ($checkboxDatas){
+if (!empty($checkboxDatas)) {
     foreach ($checkboxDatas as $checkboxData) {
         $data = new stdClass();
         $data->cmid = $cmid;
         $data->fieldid = $checkboxData['id'];
+        $data->attempt = 1;
         $data->student_id = $USER->id;
         $data->value = $checkboxData['inputvalue'];
         $data->timecreated = time();

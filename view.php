@@ -96,7 +96,10 @@ if ($hasCapabilityViewPage) {
              WHERE ca.cmid= '$id' AND ca.student_id = '$USER->id'";
     $results = $DB->get_records_sql($sql1);
 
+    $submissions = $moduleinstance->submissions;
+
     $display = [
+        'submissions' => $submissions,
         'cmid' => $id,
         'html' => $html,
         'name' => $name,
