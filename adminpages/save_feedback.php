@@ -25,28 +25,96 @@
 global $CFG, $USER, $DB;
 require_once('../../../config.php');
 require_once($CFG->libdir . '/gradelib.php');
+header('Content-Type: application/json');
 
-$result = $_POST['overall_result'];
-$comment = $_POST['comment'];
-$satisfactory = $_POST['isSatisfactory'];
+$grade_type = $_POST['grade_type'];
+$final_grade = $_POST['final_grade'];
+$attempt = $_POST['attempt'];
 $signature = $_POST['signatureData'];
 $teacherName = $_POST['teacherName'];
 $cmid = $_POST['cmid'];
 $studentid = $_POST['studentid'];
-$checkedResources = $_POST['checkedResources'];
+$checkedResources = array();
+
+if (isset($_POST['checkedResources'])) {
+    $checkedResources = $_POST['checkedResources'];
+}
+$comment = "";
+if (isset($_POST['comment'])) {
+    $comment = $_POST['comment'];
+}
+
+$error_message = "";
+
+$instance = $DB->get_record('course_modules', array('id' => $cmid));
+
+$gradeitem = grade_item::fetch(array('itemtype' => 'mod',
+                'itemmodule' => 'coversheet',
+                'iteminstance' => $instance->instance,
+                'itemnumber' => 0,
+                'courseid' => $instance->course));
+
+if ($grade_type != 0) {
+    
+    $gradeRecord = new stdClass();
+    $gradeRecord->itemid = $gradeitem->id;
+    $gradeRecord->userid = $studentid;
+    $gradeRecord->rawgrade = NULL;
+    $gradeRecord->usermodified = $USER->id;
+    $gradeRecord->rawscaleid = NULL;
+    
+    if ($grade_type == 1) {
+        if ($final_grade > $gradeitem->grademax) {
+            echo json_encode(["message" => "Given grade is more than maximum grade (Out of " . $gradeitem->grademax . ")"]);
+            die();
+        } 
+
+        if ($final_grade < $gradeitem->grademin) {
+            echo json_encode(["message" => "Given grade is less than minimum grade (Out of " . $gradeitem->grademin . ")"]);
+            die();
+        }
+
+        $gradeRecord->rawgrademax = $gradeitem->grademax;
+        $gradeRecord->rawgrademin = $gradeitem->grademin;
+        $gradeRecord->finalgrade = $final_grade;
+
+    } else if ($grade_type == 2) {
+        $scales = grade_scale::fetch(array('id' => $gradeitem->scaleid))->load_items();
+
+        $gradeRecord->rawscaleid = $gradeitem->scaleid;
+        $gradeRecord->rawgrademax = count($scales);
+        $gradeRecord->rawgrademin = 1;
+        $gradeRecord->finalgrade = $final_grade;
+    }
+
+    $existingGrade = $DB->get_record('grade_grades', ['itemid' => $gradeitem->id, 'userid' => $studentid]);
+
+    if ($existingGrade) {
+        $existingGrade->rawscaleid = $gradeRecord->rawscaleid;
+        $existingGrade->rawgrademax = $gradeRecord->rawgrademax;
+        $existingGrade->rawgrademin = $gradeRecord->rawgrademin;
+        $existingGrade->finalgrade = $gradeRecord->finalgrade;
+        $existingGrade->usermodified = $USER->id;
+        $existingGrade->timemodified = time();
+
+        $DB->update_record('grade_grades', $existingGrade);
+    } else {
+        $DB->insert_record('grade_grades', $gradeRecord);
+    }
+}                
 
 $data = new stdClass();
 $data->cmid = $cmid;
-$data->attempt_id = 1;
+$data->attempt_id = $attempt;
 $data->student_id = $studentid;
-$data->status = $satisfactory;
-$data->result = $result;
+$data->status = 1;
+$data->result = $final_grade;
 $data->comment = $comment;
 $data->assessor_name = $teacherName;
 $data->assessor_sign = $signature;
 $data->timecreated = time();
 
-$result = $DB->insert_record('coversheet_feedbacks', $data);
+$feedback_result = $DB->insert_record('coversheet_feedbacks', $data);
 
 foreach ($checkedResources as $resource_id) {
 //    $sql = "UPDATE {coversheet_requirements}
@@ -63,6 +131,6 @@ foreach ($checkedResources as $resource_id) {
     $DB->insert_record('coversheet_reqcheck', $data);
 }
 
-if ($result){
-    echo 'success';
+if ($feedback_result){
+    echo json_encode(["message" => "Success"]);
 }

@@ -37,20 +37,35 @@ Back
         {{/resources}}
     </ul>
     <hr>
-    <h3 class="report-heading">Feedback</h3>
-    <label for="overallResult">Overall Result:</label>
-    <input type="text" id="overallResult" name="overallResult" class="feedback-area">
-    <label for="comments">Comments:</label>
-    <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
-    <div class="d-flex">
-        <label>Satisfactory:</label>
-        <input type="checkbox" id="satisfactoryCheckbox" name="satisfactoryCheckbox" class="ml-3">
-    </div>
-    <div class="d-flex">
-        <label>Not Satisfactory:</label>
-        <input type="checkbox" id="notSatisfactoryCheckbox" name="notSatisfactoryCheckbox" class="ml-3">
-    </div>
-    <hr>
+    {{#gradingEnabled}}
+        <h3 class="report-heading">Feedback</h3>
+        {{#gradeItem}}
+            {{#scaleid}}
+                <input type="hidden" id="gradeType" value="2">
+                <label for="overallScale">Overall Scale:</label>
+                {{#scaleObjects}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="scaleRadio" value="{{value}}">
+                        <label class="form-check-label">
+                            {{data}}
+                        </label>
+                    </div>
+                {{/scaleObjects}}
+            {{/scaleid}}
+            {{^scaleid}}
+                <input type="hidden" id="gradeType" value="1">
+                <label for="overallPoints">Overall Points:</label>
+                <input type="number" id="overallPoints" name="overallPoints" class="feedback-area">
+            {{/scaleid}}
+        {{/gradeItem}}
+        
+        <label class="mt-3" for="comments">Comments:</label>
+        <textarea id="comments" name="comments" rows="4" class="feedback-area"></textarea>
+        <hr>
+    {{/gradingEnabled}}
+    {{^gradingEnabled}}
+        <input type="hidden" id="gradeType" value="0">
+    {{/gradingEnabled}}
     <h3 class="report-heading">Student Extra Information</h3>
     {{#datas}}
         {{#datatype}}
@@ -69,14 +84,7 @@ Back
     <hr>
     <h3 class="report-heading">Conclusion</h3>
     <div class="d-flex justify-content-between">
-        {{#feedbacks}}
-            <div class="mt-2">
-                <h6 class="conclusion-heading">Teacher's Name:</h6><p class="bold">{{assessor_name}}</p>
-                <h6 class="conclusion-heading">Teacher's Signature:</h6>
-                <img src="{{assessor_sign}}" alt="teacher_sign" height="200px" width="500px" class="conclusion-image">
-            </div>
-        {{/feedbacks}}
-        {{^feedbacks}}
+        {{#resubmit}}
         <div class="mt-2">
             <label for="nameInput" class="">Enter Your Name:</label>
             <input type="text" id="teacher_name" name="teacher_name" class="w-25 mb-2" />
@@ -95,12 +103,24 @@ Back
                 </div>
             </div>
         </div>
-        {{/feedbacks}}
+        {{/resubmit}}
+        {{^resubmit}}
+            {{#feedback}}
+                <div class="mt-2">
+                    <h6 class="conclusion-heading">Teacher's Name:</h6><p class="bold">{{assessor_name}}</p>
+                    <h6 class="conclusion-heading">Teacher's Signature:</h6>
+                    <img src="{{assessor_sign}}" alt="teacher_sign" height="200px" width="500px" class="conclusion-image">
+                </div>
+            {{/feedback}}
+        {{/resubmit}}
+        {{#attempt}}
         <div class="mt-2">
-            <h6 class="conclusion-heading">Student's Name:</h6><p class="bold">{{student_name}}</p>
+            <h6 class="conclusion-heading">Student's Name:</h6><p class="bold">{{candidate_name}}</p>
             <h6 class="conclusion-heading">Student's Signature:</h6>
-            <img src="{{student_sign}}" alt="student_sign" height="200px" width="500px" class="conclusion-image">
+            <img src="{{candidate_sign}}" alt="student_sign" height="200px" width="500px" class="conclusion-image">
         </div>
+        <div id="att_id" data-attemptid="{{attempt}}" style="display:none;"></div>
+        {{/attempt}}
     </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.3.5/signature_pad.min.js" integrity="sha512-kw/nRM/BMR2XGArXnOoxKOO5VBHLdITAW00aG8qK4zBzcLVZ4nzg7/oYCaoiwc8U9zrnsO9UHqpyljJ8+iqYiQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -131,19 +151,30 @@ Back
 
     document.getElementById("save").addEventListener("click", function(event){
         event.preventDefault();
-        var overall_result = $("#overallResult").val();
+        var gradeType = $("#gradeType").val();
+        var finalGrade = -1;
         var comment = $("#comments").val();
         var isSatisfactory = $("#satisfactoryCheckbox").is(":checked") ? 1 : 0;
         var teacher_name = $("#teacher_name").val();
         var cmid = $('#cmidContainer').data('cmid');
         var studentid = $('#stu_id').data('studentid');
+        var attempt = $('#att_id').data('attemptid');
+        
+        if (gradeType == 1) {
+            finalGrade = $("#overallPoints").val();
+        } else if (gradeType == 2) {
+            finalGrade = $('input[name="scaleRadio"]:checked').val();
+        }
 
         if (signaturePad.isEmpty()) {
             alert("Please provide a signature first.");
         }
         else if (!teacher_name) {
             alert("Please provide your name.");
-        }
+        } 
+        else if (gradeType != 0 && (!finalGrade || finalGrade == "")) {
+            alert("Please provide overall feedback.");
+        } 
         else {
             var signatureData = signaturePad.toDataURL();
             var checkedResources = [];
@@ -152,19 +183,19 @@ Back
                 checkedResources.push(resourceid);
             });
             // console.log(checkedResources);
-            saveFeedback(overall_result, comment, isSatisfactory, signatureData, teacher_name, cmid, studentid, checkedResources);
-            $("#clear, #save").hide();
+            saveFeedback(gradeType, finalGrade, attempt, comment, signatureData, teacher_name, cmid, studentid, checkedResources);
         }
     });
 
-    function saveFeedback(overall_result, comment, isSatisfactory, signatureData, teacher_name, cmid, studentid, checkedResources) {
+    function saveFeedback(gradeType, finalGrade, attempt, comment, signatureData, teacher_name, cmid, studentid, checkedResources) {
         $.ajax({
             type: "POST",
             url: "save_feedback.php", // Create a new PHP file for handling the saving logic
             data: {
-                overall_result: overall_result,
+                grade_type: gradeType,
+                final_grade: finalGrade,
+                attempt: attempt,
                 comment: comment,
-                isSatisfactory: isSatisfactory,
                 signatureData: signatureData,
                 teacherName: teacher_name,
                 cmid: cmid,
@@ -172,9 +203,13 @@ Back
                 checkedResources: checkedResources
             },
             success: function(response) {
-                alert(response);
+                alert(response['message']);
+                if (response['message'] == "Success") {
+                    $("#clear, #save").hide();
+                }
             },
-            error: function() {
+            error: function(response) {
+                console.log(response);
                 alert('Failed to insert data');
             }
         });

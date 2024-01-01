@@ -43,16 +43,6 @@ function xmldb_coversheet_upgrade($oldversion) {
         }
     }
 
-    if ($oldversion < 2023122101) {
-        $table = new xmldb_table('coversheet');
-        $grade_field = new xmldb_field('wantgrade', XMLDB_TYPE_INTEGER, '10', null, true, false, 0, null);
-
-        // Conditionally launch add field forcedownload.
-        if (!$dbman->field_exists($table, $grade_field)) {
-            $dbman->add_field($table, $grade_field);
-        }
-    }
-
     if ($oldversion < 2023122103) {
         $table = new xmldb_table('coversheet_templates');
 

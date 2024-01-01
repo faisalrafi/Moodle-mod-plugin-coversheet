@@ -76,13 +76,10 @@ class mod_coversheet_mod_form extends moodleform_mod {
             }
         }
 
-        $mform->addElement('checkbox', 'wantgrade', get_string('wantgrading', 'coversheet'));
-
         $mform->addElement('modgrade', $gradefieldname, get_string('gradenoun'), $gradeoptions);
         $mform->addHelpButton($gradefieldname, 'modgrade', 'grades');
         $mform->setDefault($gradefieldname, $CFG->gradepointdefault);
 
-        $mform->hideIf($gradefieldname, 'wantgrade', 'notchecked');
         // Number of attempts.
         $attemptoptions = ['0' => get_string('unlimited')];
         for ($i = 1; $i <= COVERSHEET_MAX_ATTEMPT_OPTION; $i++) {

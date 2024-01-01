@@ -46,7 +46,11 @@ $hasCapabilityViewPage = has_capability('mod/coversheet:viewpage', $context);
 if ($hasCapabilityViewPage) {
     echo $OUTPUT->header();
 
-    $sql = "SELECT * FROM {coversheet_attempts} ca WHERE ca.cmid = :cmid";
+    $sql = "SELECT ca.student_id, u.firstname, u.lastname
+    FROM {coversheet_attempts} ca
+    LEFT JOIN {user} u ON u.id = ca.student_id
+    WHERE ca.cmid = :cmid 
+    GROUP BY ca.student_id";
     $details = $DB->get_records_sql($sql, ['cmid' => $id]);
 //    echo "<pre>";var_dump($details); die();
 
