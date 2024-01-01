@@ -29,7 +29,7 @@ header('Content-Type: application/json');
 
 $grade_type = $_POST['grade_type'];
 $final_grade = $_POST['final_grade'];
-$comment = $_POST['comment'];
+$attempt = $_POST['attempt'];
 $signature = $_POST['signatureData'];
 $teacherName = $_POST['teacherName'];
 $cmid = $_POST['cmid'];
@@ -38,6 +38,10 @@ $checkedResources = array();
 
 if (isset($_POST['checkedResources'])) {
     $checkedResources = $_POST['checkedResources'];
+}
+$comment = "";
+if (isset($_POST['comment'])) {
+    $comment = $_POST['comment'];
 }
 
 $error_message = "";
@@ -101,7 +105,7 @@ if ($grade_type != 0) {
 
 $data = new stdClass();
 $data->cmid = $cmid;
-$data->attempt_id = 1;
+$data->attempt_id = $attempt;
 $data->student_id = $studentid;
 $data->status = 1;
 $data->result = $final_grade;

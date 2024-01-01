@@ -47,19 +47,22 @@ foreach ($contents as $content) {
     $html = coversheet_prepare_html_data_for_view($content, $context);
 }
 
-$sql = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid = :cmid AND ca.student_id = :studentid";
-$details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
-//var_dump($details); die();
-$student_name = $details->candidate_name;
-$student_sign = $details->candidate_sign;
+$attempt_sql = "SELECT * FROM {coversheet_attempts} ca
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid ORDER BY id DESC LIMIT 1";
+$attempt = $DB->get_record_sql($attempt_sql, ['cmid' => $id, 'studentid' => $studentid]);
 
 $resource_query = "SELECT * FROM {coversheet_requirements} WHERE cmid = '$id'";
 $resources = $DB->get_records_sql($resource_query);
 
-$feedback_query = "SELECT assessor_name, assessor_sign FROM {coversheet_feedbacks} cf 
-                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid'";
-$feedback = $DB->get_records_sql($feedback_query);
+$feedback_query = "SELECT assessor_name, assessor_sign, attempt_id FROM {coversheet_feedbacks} cf 
+                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
+$feedback = $DB->get_record_sql($feedback_query);
+
+$resubmit = false;
+
+if (!$feedback || ($attempt->attempt != $feedback->attempt_id)) {
+    $resubmit = true;
+}
 
 $query = "SELECT cft.name, cfd.value, cft.datatype FROM {coversheet_field_type} cft
           LEFT JOIN {coversheet_field_data} cfd ON cft.id = cfd.fieldid
@@ -109,15 +112,15 @@ if ($gradeitem && $gradeitem->gradetype > 0) {
 $display = [
     'contents' => array_values($contents),
     'resources' => array_values($resources),
-    'feedbacks' => array_values($feedback),
+    'feedback' => $feedback,
+    'attempt' => $attempt,
     'datas' => array_values($datas),
     'gradingEnabled' => $grading_enabled,
     'gradeItem' => $gradeitem,
     'cmid' => $id,
     'studentid' => $studentid,
     'currentDate' => $currentdate,
-    'student_name' => $student_name,
-    'student_sign' => $student_sign,
+    'resubmit' => $resubmit,
     'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/report', $display);
