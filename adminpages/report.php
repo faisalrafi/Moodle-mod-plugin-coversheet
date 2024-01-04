@@ -48,7 +48,7 @@ foreach ($contents as $content) {
 }
 
 $attempt_sql = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid = :cmid AND ca.student_id = :studentid ORDER BY id DESC LIMIT 1";
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid AND ca.status = 1 ORDER BY id DESC LIMIT 1";
 $attempt = $DB->get_record_sql($attempt_sql, ['cmid' => $id, 'studentid' => $studentid]);
 
 $resource_query = "SELECT * FROM {coversheet_requirements} WHERE cmid = '$id'";

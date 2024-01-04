@@ -62,14 +62,14 @@ foreach ($custom_values as $custom_value) {
 }
 
 $feedback_query = "SELECT assessor_name, assessor_sign FROM {coversheet_feedbacks} cf 
-                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid'";
+                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
 $feedback = $DB->get_record_sql($feedback_query);
 
 $user->teacher_name = $feedback->assessor_name;
 $user->teacher_signature = $feedback->assessor_sign;
 
 $sql = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid = :cmid AND ca.student_id = :studentid";
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid ORDER BY id DESC LIMIT 1";
 $details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
 
 $user->student_name = $details->candidate_name;

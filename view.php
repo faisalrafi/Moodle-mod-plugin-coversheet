@@ -47,7 +47,7 @@ $hasCapabilityViewPage = has_capability('mod/coversheet:viewpage', $context);
 if ($hasCapabilityViewPage) {
     echo $OUTPUT->header();
 
-    $sql = "SELECT ca.student_id, u.firstname, u.lastname
+    $sql = "SELECT ca.student_id, u.firstname, u.lastname, ca.status
     FROM {coversheet_attempts} ca
     LEFT JOIN {user} u ON u.id = ca.student_id
     WHERE ca.cmid = :cmid AND ca.status = 1
