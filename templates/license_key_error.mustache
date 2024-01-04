@@ -1,0 +1,47 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_coversheet/license_key_error
+    Example context (json):
+    {
+    }
+}}
+
+<div>
+    <hr>
+    <div class="alert alert-danger">
+        <p>
+            <strong>{{#str}} license_key_doesnt_match, mod_coversheet {{/str}}</strong>
+            {{#str}} license_key_changed_domain, mod_coversheet  {{/str}}
+        </p>
+        <p>
+            {{#str}} license_key_contact_us, mod_coversheet {{/str}}
+            <strong>elearning@brainstation-23.com </strong>
+        </p>
+        <p>
+            {{#str}}  license_key_disable_coversheet, mod_coversheet {{/str}}
+            <a href="{{ admin_setting_url }}">
+                {{#str}} license_key_quiz_settings_title, mod_coversheet {{/str}}
+            </a>.
+        </p>
+    </div>
+    <div class="text-center">
+        <a href="{{course_url}}" class="btn btn-outline-primary mr-3">
+            {{#str}}license_key_go_to_course, mod_coversheet {{/str}}
+        </a>
+        <a href="{{ coversheet_purchase_url }}" class="btn btn-primary ml-3">
+            {{#str}}license_key_purchase_pro, mod_coversheet {{/str}}
+        </a>
+    </div>
+</div>

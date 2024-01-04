@@ -26,6 +26,10 @@
 <!--    <a href="/mod/coversheet/adminpages/resource_list.php?id={{cmid}}" class="btn add-resource">Resources List</a>-->
 <!--</div>-->
 
+<div id="courseId" data-courseid="{{courseid}}" style="display:none;"></div>
+<div id="license" data-licensekey="{{licenseKey}}" style="display:none;"></div>
+<div id="webroot" data-webroot="{{webroot}}" style="display:none;"></div>
+<div id="cmidContainer" data-cmid="{{cmid}}" style="display:none;"></div>
 <h5 class="mt-4">Student Submissions:</h5>
 <table class="styled-table mx-auto w-75">
     <thead>
@@ -45,3 +49,24 @@
     {{/details}}
     </tbody>
 </table>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let courseid = document.getElementById('courseId').getAttribute('data-courseid');
+        let license_key = document.getElementById('license').getAttribute('data-licensekey');
+        let wwwroot = document.getElementById('webroot').getAttribute('data-webroot');
+        let cmid = document.getElementById('cmidContainer').getAttribute('data-cmid');
+
+        let decodedString = atob(license_key);
+        let decodedArray = decodedString.split('.');
+        let encodedString = decodedArray[1] + decodedArray[3];
+
+        let finalDecodedString = atob(encodedString);
+
+        let resultArray = finalDecodedString.split('+');
+
+        if(resultArray[0] !== wwwroot || resultArray[1] !== 'Selkajag') {
+            /// Redirecting to error page.
+            window.location.href = wwwroot + '/mod/coversheet/license_key_error.php?courseid=' + courseid + '&domain_name=' + resultArray[0] + '&cmid=' + cmid;
+        }
+    });
+</script>

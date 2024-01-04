@@ -78,6 +78,20 @@ $string['updatesuccess'] = 'Resource Updated Successfully';
 $string['addresourcemsg'] = 'Resource added successfully, check the resource list.';
 $string['btnresource'] = 'Resource List';
 
+// License Key Error Page.
+$string['license_key_error_title'] = 'License key error';
+$string['license_key_doesnt_match'] = 'Your license key does not match your current domain.';
+$string['license_key_changed_domain'] = 'This is most likely due to a change in the domain URL of your site.';
+$string['license_key_contact_us'] = 'If you need to use coversheet plugin for multiple domains, you can contact us at ';
+$string['license_key_disable_coversheet'] = 'You have to add license key from plugin settings';
+$string['license_key_quiz_settings_title'] = 'Coversheet Settings Page';
+$string['license_key_go_to_course'] = 'Go back to course details';
+$string['license_key_purchase_pro'] = 'Purchase Coversheet Plugin!';
+$string['headerlicense'] = "License Key";
+$string['headerlicenseinfo'] = "License Key";
+$string['setting:license_key'] = 'Coversheet License Key';
+$string['setting:license_key_desc'] = 'Coversheet license key provided during purchase';
+
 
 $string['coversheet:view'] = 'View';
 $string['coversheet:viewpage'] = 'View Page';
