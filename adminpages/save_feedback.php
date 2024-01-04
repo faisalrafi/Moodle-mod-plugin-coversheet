@@ -116,6 +116,10 @@ $data->timecreated = time();
 
 $feedback_result = $DB->insert_record('coversheet_feedbacks', $data);
 
+//$record = $DB->get_record('coversheet_attempts', ['attempt' => $attempt, 'student_id' => $studentid]);
+//$record->feedback_submit = 1;
+//$result1 = $DB->update_record('coversheet_attempts', $record);
+
 foreach ($checkedResources as $resource_id) {
 //    $sql = "UPDATE {coversheet_requirements}
 //            SET status = 1, student_id = :studentid

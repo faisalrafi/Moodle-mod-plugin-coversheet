@@ -45,13 +45,14 @@ $string['viewtemplate'] = 'View Template';
 
 $string['formelement'] = 'Content';
 
-// User Update Profile.
+// User Update Profile form.
 $string['formdatatype'] = 'datatype';
 $string['formname'] = 'Name';
 $string['formshortname'] = 'Shortname';
 $string['formparam'] = 'Param';
 $string['formcancel'] = 'Cancel';
 $string['formsave'] = 'Update Profile Field';
+$string['formrequired'] = 'Required';
 
 $string['deleteaction'] = 'delete';
 $string['deletemsg'] = 'Successfully Deleted the field and its data';
@@ -94,5 +95,7 @@ $string['textarea'] = 'textarea';
 $string['text'] = 'text';
 $string['radio'] = 'radio';
 $string['dropdown'] = 'dropdown';
+
+$string['review'] = 'Review';
 
 $string['submissionsallowed'] = 'Submissions allowed';

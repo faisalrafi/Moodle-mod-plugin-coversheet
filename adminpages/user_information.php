@@ -39,6 +39,9 @@ echo $OUTPUT->header();
 
 $details = $DB->get_records('coversheet_field_type', ['cmid' => $cmid]);
 //var_dump($details); die();
+foreach ($details as $data) {
+    $data->required = ($data->required == 1) ? 'Yes' : 'No';
+}
 $display = [
     'cmid' => $cmid,
     'details' => array_values($details),

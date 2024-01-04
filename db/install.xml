@@ -71,10 +71,11 @@
                 <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Student id" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="attempt" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Attempt id" SEQUENCE="false" />
                 <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="declaration" TYPE="text" LENGTH="10" NOTNULL="true" COMMENT="declaration of student" SEQUENCE="false" />
-                <FIELD NAME="date" TYPE="text" LENGTH="10" NOTNULL="true" COMMENT="Date of " SEQUENCE="false" />
-                <FIELD NAME="candidate_name" LENGTH="255" TYPE="text" NOTNULL="true" COMMENT="Candidate Name" SEQUENCE="false" />
-                <FIELD NAME="candidate_sign" LENGTH="255" TYPE="text" NOTNULL="true" COMMENT="Candidate Name" SEQUENCE="false" />
+                <FIELD NAME="feedback_submit" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="Feedback submit from teacher" DEFAULT="" SEQUENCE="false" />
+                <FIELD NAME="declaration" TYPE="text" LENGTH="10" NOTNULL="false" COMMENT="declaration of student" SEQUENCE="false" />
+                <FIELD NAME="date" TYPE="text" LENGTH="10" NOTNULL="false" COMMENT="Date of " SEQUENCE="false" />
+                <FIELD NAME="candidate_name" LENGTH="255" TYPE="text" NOTNULL="false" COMMENT="Candidate Name" SEQUENCE="false" />
+                <FIELD NAME="candidate_sign" LENGTH="255" TYPE="text" NOTNULL="false" COMMENT="Candidate Name" SEQUENCE="false" />
                 <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
             </FIELDS>
             <KEYS>
@@ -131,6 +132,7 @@
                 <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for coversheet_submissions"/>
                 <KEY NAME="cmid" FIELDS="cmid" TYPE="foreign" REFTABLE="coversheet" REFFIELDS="id" />
                 <KEY NAME="fieldid" FIELDS="fieldid" TYPE="foreign" REFTABLE="coversheet_field_type" REFFIELDS="id" />
+                <KEY NAME="attempt" FIELDS="attempt" TYPE="foreign" REFTABLE="coversheet_attempts" REFFIELDS="id" />
             </KEYS>
         </TABLE>
         <TABLE NAME="coversheet_reqcheck" COMMENT="Data for each resource requirments">

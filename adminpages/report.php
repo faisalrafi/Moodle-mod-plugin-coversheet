@@ -55,7 +55,7 @@ $resource_query = "SELECT * FROM {coversheet_requirements} WHERE cmid = '$id'";
 $resources = $DB->get_records_sql($resource_query);
 
 $feedback_query = "SELECT assessor_name, assessor_sign, attempt_id FROM {coversheet_feedbacks} cf 
-                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
+                   WHERE cf.cmid = '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
 $feedback = $DB->get_record_sql($feedback_query);
 
 $resubmit = false;
@@ -64,15 +64,15 @@ if (!$feedback || ($attempt->attempt != $feedback->attempt_id)) {
     $resubmit = true;
 }
 
-$query = "SELECT cft.name, cfd.value, cft.datatype FROM {coversheet_field_type} cft
+$query = "SELECT cfd.id, cft.name, cfd.value, cft.datatype FROM {coversheet_field_type} cft
           LEFT JOIN {coversheet_field_data} cfd ON cft.id = cfd.fieldid
           WHERE cft.cmid = :cmid AND cfd.student_id = :studentid";
 $datas = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid]);
 //echo "<pre>";var_dump($datas); die();
 foreach ($datas as $data) {
-    $data->datatype = ($data->datatype === 'checkbox');
-    $data->isCheckbox = ($data->datatype === 'checkbox');
-    $data->isChecked = ($data->datatype === 'checkbox' && $data->value == 1);
+    if ($data->datatype === 'checkbox') {
+        $data->value = ($data->value == 1) ? 'Yes' : 'No';
+    }
 }
 
 $currentdate = date('d F Y');
