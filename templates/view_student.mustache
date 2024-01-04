@@ -26,6 +26,8 @@
     {{{html}}}
 </div>
 <div id="cmidContainer" data-cmid="{{cmid}}" style="display:none;"></div>
+<div id="attemptnumber" data-attempt="{{attemptnumber}}" style="display:none;"></div>
+<div id="studentid" data-studentid="{{studentid}}" style="display:none;"></div>
 <table class="table">
     <tbody>
         <tr>
@@ -58,7 +60,6 @@
         {{#isTextinput}}
             <div class="textinput-container my-3 d-flex">
                 <label for="{{name}}">{{name}}:</label>
-
                 {{#isRequired}}
                     <input type="text" name="{{name}}" class="textinput ml-3" data-id="{{id}}" data-datatype="{{datatype}}" data-name="{{name}}" required>
                 {{/isRequired}}
@@ -131,7 +132,7 @@
             <button type="button" id="clear"><span> Clear </span></button>
         </div>
         <div class="save-btn">
-            <button type="button" type="submit" id="save"><span> Save </span></button>
+            <button type="button" id="save"><span> Save </span></button>
         </div>
     </div>
 {{/results}}
@@ -164,18 +165,13 @@
         // console.log($("input[type='radio']:visible").length);
         var student_name = $("#student_name").val();
         var cmid = $('#cmidContainer').data('cmid');
+        var attemptid = $('#attemptnumber').data('attempt');
+        var studentid = $('#studentid').data('studentid');
         var date = $('#currentDate').val();
         var isRequiredFieldEmpty = false; // Flag to track if any required field is empty.
         var flag = false;
         var hasRadioButtons = $("input[type='radio']:visible").length > 0;
-        console.log(hasRadioButtons);
-        // if (hasRadioButtons) {
-        //     // Your logic when there are radio buttons on the page
-        //     console.log("Page has radio buttons.");
-        // } else {
-        //     // Your logic when there are no radio buttons on the page
-        //     console.log("Page does not have radio buttons.");
-        // }
+        // console.log(hasRadioButtons);
 
         if (signaturePad.isEmpty()) {
             alert("Please provide a signature first.");
@@ -295,21 +291,28 @@
                 var fieldCheckbox = $(this).data('name');
                 var fieldid = $(this).data('id');
                 var datatype = $(this).data('datatype');
+
+                var checkboxData = {
+                    id: fieldid,
+                    datatype: datatype,
+                    inputvalue: isChecked ? 1 : 0
+                };
+                checkboxDataArray.push(checkboxData);
                 if (requiredCheckbox && !isChecked) {
                     isRequiredFieldEmpty = true;
                     alert('Please fill up '+ fieldCheckbox +' field');
                     return false;
                 }
-                else {
-                    if(isChecked) {
-                        var checkboxData = {
-                            id: fieldid,
-                            datatype: datatype,
-                            inputvalue: 1
-                        };
-                        checkboxDataArray.push(checkboxData);
-                    }
-                }
+                // else {
+                //     if(isChecked) {
+                //         var checkboxData = {
+                //             id: fieldid,
+                //             datatype: datatype,
+                //             inputvalue: 1
+                //         };
+                //         checkboxDataArray.push(checkboxData);
+                //     }
+                // }
             });
 
             $('.dropdowninput').each(function () {
@@ -342,28 +345,30 @@
                 return;
             }
             else {
-                console.log(textDataArray);
-                console.log(textareaDataArray);
-                console.log(radioDataArray);
-                console.log(notRequiredDataArray);
-                console.log(dropdownDataArray);
-                console.log(checkboxDataArray);
+                // console.log(textDataArray);
+                // console.log(textareaDataArray);
+                // console.log(radioDataArray);
+                // console.log(notRequiredDataArray);
+                // console.log(dropdownDataArray);
+                // console.log(checkboxDataArray);
 
-                saveNonrequiredData(cmid,notRequiredDataArray)
-                saveInfoData(cmid, checkboxDataArray, textareaDataArray,
+                saveNonrequiredData(cmid, attemptid, notRequiredDataArray)
+                saveInfoData(cmid, attemptid, checkboxDataArray, textareaDataArray,
                         textDataArray, radioDataArray, dropdownDataArray)
-                saveSignatureToDatabase(signatureData, student_name, cmid, date);
+                saveSignatureToDatabase(signatureData, student_name, cmid, attemptid, studentid, date);
                 $("#clear, #save").hide();
+                // location.reload();
             }
         }
     });
-    function saveInfoData(cmid, checkboxDataArray, textareaDataArray,
+    function saveInfoData(cmid, attemptid, checkboxDataArray, textareaDataArray,
                           textDataArray, radioDataArray, dropdownDataArray) {
         $.ajax({
             type: "POST",
             url: "save_user_data.php", // Create a new PHP file for handling the saving logic
             data: {
                 cmid: cmid,
+                attemptid: attemptid,
                 checkboxDataArray: checkboxDataArray,
                 textareaDataArray: textareaDataArray,
                 textDataArray: textDataArray,
@@ -371,30 +376,31 @@
                 dropdownDataArray: dropdownDataArray,
             },
             success: function() {
-                alert('All Data Saved');
+                // alert('All Data Saved');
             },
             error: function() {
                 alert('Failed to insert data');
             }
         });
     }
-    function saveNonrequiredData(cmid, notRequiredDataArray) {
+    function saveNonrequiredData(cmid, attemptid,  notRequiredDataArray) {
         $.ajax({
             type: "POST",
             url: "save_user_data.php", // Create a new PHP file for handling the saving logic
             data: {
                 cmid: cmid,
+                attemptid: attemptid,
                 notRequiredDataArray: notRequiredDataArray,
             },
             success: function() {
-                alert('Non Required radio Data Saved');
+                // alert('Non Required radio Data Saved');
             },
             error: function() {
                 alert('Failed to insert non required radio data');
             }
         });
     }
-    function saveSignatureToDatabase(signatureData, student_name, cmid, date) {
+    function saveSignatureToDatabase(signatureData, student_name, cmid, attemptid, studentid, date) {
         $.ajax({
             type: "POST",
             url: "save_signature.php", // Create a new PHP file for handling the saving logic
@@ -402,10 +408,13 @@
                 signatureData: signatureData,
                 studentName: student_name,
                 cmid: cmid,
+                attemptid: attemptid,
+                studentid: studentid,
                 date: date
             },
             success: function(response) {
-                alert('Signature Data Saved');
+                // alert('Signature Data Saved');
+                location.reload();
             },
             error: function() {
                 alert('Failed to insert signature data');

@@ -1,0 +1,37 @@
+{{#enable}}
+        <div class="row">
+            <div class="singlebutton quizstartbuttondiv">
+                <form method="post" action="{{{formurl}}}">
+                    <input type="hidden" name="id" value="{{cmid}}">
+                    <input type="hidden" name="prev_attempt" value="{{prev_attempt}}">
+                    <button type="submit" class="btn btn-primary mb-3 ml-3">Re-submission</button>
+                </form>
+            </div>
+        </div>
+{{/enable}}
+{{^enable}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h5>{{{attempt_text}}}</h5>
+    </div>
+{{/enable}}
+<div class="d-flex">
+    <label for="grade">Grade:</label>
+    <input type="text" class="ml-2 w-25">
+</div>
+<div class="py-3">
+    <h4 class="report-heading">Last attempt information</h4>
+    {{#datas}}
+        <div class="d-flex">
+            <label for="name">{{name}}:</label>
+            <p class="ml-2">{{value}}</p>
+        </div>
+    {{/datas}}
+</div>
+<div class="">
+    <h6 class="conclusion-heading">Name:</h6><p class="bold">{{sname}}</p>
+    <h6 class="conclusion-heading">Signature:</h6>
+    <img src="{{sign}}" alt="teacher_sign" height="200px" width="500px" class="conclusion-image">
+</div>

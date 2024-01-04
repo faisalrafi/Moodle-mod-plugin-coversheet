@@ -26,18 +26,17 @@ global $CFG, $USER, $DB;
 require_once('../../../config.php');
 require_once($CFG->libdir . '/gradelib.php');
 
-$result = $_POST['overall_result'];
-$comment = $_POST['comment'];
-$satisfactory = $_POST['isSatisfactory'];
-$signature = $_POST['signatureData'];
-$teacherName = $_POST['teacherName'];
-$cmid = $_POST['cmid'];
-$studentid = $_POST['studentid'];
-$checkedResources = $_POST['checkedResources'];
+$result = $_POST['overall_result']??'';
+$comment = $_POST['comment']??'';
+$satisfactory = $_POST['isSatisfactory']??'';
+$signature = $_POST['signatureData']??'';
+$teacherName = $_POST['teacherName']??'';
+$cmid = $_POST['cmid']??'';
+$studentid = $_POST['studentid']??'';
+$checkedResources = $_POST['checkedResources']??[];
 
 $data = new stdClass();
 $data->cmid = $cmid;
-$data->attempt_id = 1;
 $data->student_id = $studentid;
 $data->status = $satisfactory;
 $data->result = $result;
@@ -47,6 +46,10 @@ $data->assessor_sign = $signature;
 $data->timecreated = time();
 
 $result = $DB->insert_record('coversheet_feedbacks', $data);
+
+//$record = $DB->get_record('coversheet_attempts', ['attempt' => $attempt, 'student_id' => $studentid]);
+//$record->feedback_submit = 1;
+//$result1 = $DB->update_record('coversheet_attempts', $record);
 
 foreach ($checkedResources as $resource_id) {
 //    $sql = "UPDATE {coversheet_requirements}

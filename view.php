@@ -46,7 +46,7 @@ $hasCapabilityViewPage = has_capability('mod/coversheet:viewpage', $context);
 if ($hasCapabilityViewPage) {
     echo $OUTPUT->header();
 
-    $sql = "SELECT * FROM {coversheet_attempts} ca WHERE ca.cmid = :cmid";
+    $sql = "SELECT * FROM {coversheet_attempts} ca WHERE ca.cmid = :cmid AND ca.status = 1";
     $details = $DB->get_records_sql($sql, ['cmid' => $id]);
 //    echo "<pre>";var_dump($details); die();
 
@@ -57,60 +57,121 @@ if ($hasCapabilityViewPage) {
     ];
     echo $OUTPUT->render_from_template('mod_coversheet/view', $display);
 } else {
-    echo $OUTPUT->header();
-    $sql = "SELECT * FROM {coversheet_contents} cc WHERE cc.cmid = :cmid";
-    $contents = $DB->get_records_sql($sql, ['cmid' => $id]);
-    $html = '';
-    foreach ($contents as $content){
-        $html .= coversheet_load_content($content, $context, $id);
-
+    $attemptid = coversheet_populate_data_in_user_progress_track_table($id);
+//    echo "<pre>"; var_dump($attemptid); die();
+    if(empty($attemptid)){
+        $attempt = coversheet_create_new_attempt(0, $id);
+        $attemptid = new stdClass();
+        $attemptid->attempt = $attempt;
+        $attemptid->status = 0;
+//        var_dump($attemptid->attempt); die();
     }
-    $info = $DB->get_record('user', ['id' => $USER->id]);
-    $name = $info->firstname . ' ' . $info->lastname;
-    $email = $info->email;
-    $phone = $info->phone1;
-    $currentdate = date('d F Y');
 
-    $sql = "SELECT ft.id, ft.name, ft.datatype, ft.param, ft.required
+    $attemptnumber = $attemptid->attempt;
+
+    if ($attemptid->status == 0 || (empty($attemptid) && $attemptid->feedback_submit != 0)){
+        echo $OUTPUT->header();
+        if (empty($attemptid)) {
+            $attempt = coversheet_create_new_attempt(0, $id);
+        }
+        $sql = "SELECT * FROM {coversheet_contents} cc WHERE cc.cmid = :cmid";
+        $contents = $DB->get_records_sql($sql, ['cmid' => $id]);
+        $html = '';
+        foreach ($contents as $content) {
+            $html .= coversheet_load_content($content, $context, $id);
+        }
+        $info = $DB->get_record('user', ['id' => $USER->id]);
+        $name = $info->firstname . ' ' . $info->lastname;
+        $email = $info->email;
+        $phone = $info->phone1;
+
+        $sql = "SELECT ft.id, ft.name, ft.datatype, ft.param, ft.required
             FROM {coversheet_field_type} ft WHERE ft.cmid = '$id'";
-    $info = $DB->get_records_sql($sql);
+        $info = $DB->get_records_sql($sql);
 //    echo "<pre>";var_dump($info);die();
-    foreach ($info as $field) {
-        $field->isCheckbox = ($field->datatype === get_string('checkbox', 'coversheet'));
-        $field->isTextarea = ($field->datatype === get_string('textarea', 'coversheet'));
-        $field->isTextinput = ($field->datatype === get_string('text', 'coversheet'));
-        $field->isRadio = ($field->datatype === get_string('radio', 'coversheet'));
+        foreach ($info as $field) {
+            $field->isCheckbox = ($field->datatype === get_string('checkbox', 'coversheet'));
+            $field->isTextarea = ($field->datatype === get_string('textarea', 'coversheet'));
+            $field->isTextinput = ($field->datatype === get_string('text', 'coversheet'));
+            $field->isRadio = ($field->datatype === get_string('radio', 'coversheet'));
 
-        $field->isRequired = ($field->required == 1);
+            $field->isRequired = ($field->required == 1);
 
-        if ($field->isRadio) {
-            $field->radioOptions = explode(',', $field->param);
+            if ($field->isRadio) {
+                $field->radioOptions = explode(',', $field->param);
+            }
+            $field->isDropdown = ($field->datatype === get_string('dropdown', 'coversheet'));
+            if ($field->isDropdown) {
+                $field->dropdownList = explode(',', $field->param);
+            }
         }
-        $field->isDropdown = ($field->datatype === get_string('dropdown', 'coversheet'));
-        if ($field->isDropdown) {
-            $field->dropdownList = explode(',', $field->param);
+
+        $sql1 = "SELECT * FROM {coversheet_attempts} ca
+             WHERE ca.cmid= '$id' AND ca.student_id = '$USER->id' AND ca.status = 1 AND ca.attempt = '$attemptid->attempt'";
+        $results = $DB->get_records_sql($sql1);
+//    echo "<pre>"; var_dump($results); die();
+
+        $submissions = $moduleinstance->submissions;
+        $currentdate = date('d F Y');
+
+        $display = [
+            'submissions' => $submissions,
+            'cmid' => $id,
+            'attemptnumber' => $attemptnumber,
+            'studentid' => $USER->id,
+            'html' => $html,
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'currentDate' => $currentdate,
+            'webroot' => $CFG->wwwroot,
+            'infos' => array_values($info),
+            'results' => array_values($results),
+        ];
+        echo $OUTPUT->render_from_template('mod_coversheet/view_student', $display);
+    } else {
+        echo $OUTPUT->header();
+        $url = new moodle_url('/mod/coversheet/startattempt.php');
+        $attempts = $DB->get_record('coversheet_attempts', ['cmid' => $id, 'student_id' => $USER->id, 'attempt' => $attemptid->attempt]);
+        $sname = $attempts->candidate_name;
+        $sign = $attempts->candidate_sign;
+//        echo "<pre>";var_dump($sname); die();
+
+        $sql = "SELECT cfd.id, cfd.value, cfd.attempt, cft.name, cft.datatype FROM {coversheet_field_data} cfd
+                LEFT JOIN {coversheet_field_type} cft ON cfd.fieldid = cft.id
+                WHERE cfd.attempt = '$attemptid->attempt' AND cfd.student_id = '$USER->id' AND cfd.cmid = '$id'";
+        $datas = $DB->get_records_sql($sql);
+//        echo "<pre>";var_dump($datas); die();
+        foreach ($datas as $data) {
+            if ($data->datatype === 'checkbox') {
+                $data->value = ($data->value == 1) ? 'Yes' : 'No';
+            }
         }
+
+        $enabled = 0;
+        if ($attemptid->feedback_submit && ($attemptid->attempt < $moduleinstance->submissions)){
+            $enabled = 1;
+        }
+        if ($attemptid->attempt == $moduleinstance->submissions){
+            $attempt_text = 'You reached your maximum submission limit';
+        }
+        else{
+            $attempt_text = 'You can\'t reattempt now, please wait for teacher\'s feedback';
+        }
+
+        $display = (object)[
+            'formurl' => $url,
+            'prev_attempt' => $attemptid->attempt,
+            'cmid' => $id,
+            'datas' => array_values($datas),
+            'enable' => $enabled,
+            'sname' => $sname,
+            'sign' => $sign,
+            'attempt_text' => $attempt_text,
+            'viewAttempt_url' => new moodle_url('/mod/coversheet/studentpages/view_student.php'),
+        ];
+        echo $OUTPUT->render_from_template('mod_coversheet/reattempt', $display);
     }
-
-    $sql1 = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid= '$id' AND ca.student_id = '$USER->id'";
-    $results = $DB->get_records_sql($sql1);
-
-    $submissions = $moduleinstance->submissions;
-
-    $display = [
-        'submissions' => $submissions,
-        'cmid' => $id,
-        'html' => $html,
-        'name' => $name,
-        'email' => $email,
-        'phone' => $phone,
-        'currentDate' => $currentdate,
-        'webroot' => $CFG->wwwroot,
-        'infos' => array_values($info),
-        'results' => array_values($results),
-    ];
-    echo $OUTPUT->render_from_template('mod_coversheet/view_student', $display);
 
 }
 

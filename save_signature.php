@@ -29,21 +29,26 @@ require_once($CFG->libdir . '/gradelib.php');
 $signature = $_POST['signatureData'] ?? '';
 $studentName = $_POST['studentName'] ?? '';
 $cmid = $_POST['cmid'] ?? '';
+$attemptid = $_POST['attemptid'] ?? '';
+$studentid = $_POST['studentid'] ?? '';
 $date = $_POST['date'] ?? '';
 $declaration = 'To be signed once the assessment is complete and ready for submission';
 
-$data = new stdClass();
-$data->cmid = $cmid; // Replace with the actual course module ID
-$data->student_id = $USER->id;
-$data->attempt = 1;
-$data->status = 1;
-$data->declaration = $declaration;
-$data->date = $date;
-$data->candidate_name = $studentName;
-$data->candidate_sign = $signature;
-$data->timecreated = time();
+$attempt = $DB->get_record('coversheet_attempts',['cmid'=>intval($cmid),'student_id'=>intval($studentid),'attempt'=>intval($attemptid)]);
+//var_dump($attempt); die();
 
-$result = $DB->insert_record('coversheet_attempts', $data);
+//$data = new stdClass();
+$attempt->cmid = $cmid;
+$attempt->student_id = $studentid;
+$attempt->attempt = $attemptid;
+$attempt->status = 1;
+$attempt->declaration = $declaration;
+$attempt->date = $date;
+$attempt->candidate_name = $studentName;
+$attempt->candidate_sign = $signature;
+$attempt->timecreated = time();
+
+$result = $DB->update_record('coversheet_attempts', $attempt);
 
 if ($result){
     echo 'success';

@@ -26,6 +26,8 @@ global $CFG, $USER, $DB;
 require_once('../../config.php');
 
 $cmid = $_POST['cmid']?? '';
+$attemptid = $_POST['attemptid']?? '';
+$studentid = $_POST['studentid'] ?? '';
 //$newcmid = $_POST['newcmid'];
 //$fieldid = $_POST['fieldid'];
 //$checkboxValue = $_POST['checkboxValue'];
@@ -47,7 +49,7 @@ if (!empty($textareaDatas)) {
             $data = new stdClass();
             $data->cmid = $cmid;
             $data->fieldid = $textareaData['id'];
-            $data->attempt = 1;
+            $data->attempt = $attemptid;
             $data->student_id = $USER->id;
             $data->value = $textareaData['inputvalue'];
             $data->timecreated = time();
@@ -62,7 +64,7 @@ if (!empty($textDatas)) {
             $data = new stdClass();
             $data->cmid = $cmid;
             $data->fieldid = $textData['id'];
-            $data->attempt = 1;
+            $data->attempt = $attemptid;
             $data->student_id = $USER->id;
             $data->value = $textData['inputvalue'];
             $data->timecreated = time();
@@ -76,7 +78,7 @@ if (!empty($radioDatas)) {
         $data = new stdClass();
         $data->cmid = $cmid;
         $data->fieldid = $radioData['id'];
-        $data->attempt = 1;
+        $data->attempt = $attemptid;
         $data->student_id = $USER->id;
         $data->value = $radioData['value'];
         $data->timecreated = time();
@@ -89,7 +91,7 @@ if (!empty($notRequiredDataArray)) {
         $data = new stdClass();
         $data->cmid = $cmid;
         $data->fieldid = $newradioData['id'];
-        $data->attempt = 1;
+        $data->attempt = $attemptid;
         $data->student_id = $USER->id;
         $data->value = $newradioData['value'];
         $data->timecreated = time();
@@ -104,7 +106,7 @@ if(!empty($dropdownDatas)) {
             $data = new stdClass();
             $data->cmid = $cmid;
             $data->fieldid = $dropdownData['id'];
-            $data->attempt = 1;
+            $data->attempt = $attemptid;
             $data->student_id = $USER->id;
             $data->value = $dropdownData['value'];
             $data->timecreated = time();
@@ -118,7 +120,7 @@ if (!empty($checkboxDatas)) {
         $data = new stdClass();
         $data->cmid = $cmid;
         $data->fieldid = $checkboxData['id'];
-        $data->attempt = 1;
+        $data->attempt = $attemptid;
         $data->student_id = $USER->id;
         $data->value = $checkboxData['inputvalue'];
         $data->timecreated = time();

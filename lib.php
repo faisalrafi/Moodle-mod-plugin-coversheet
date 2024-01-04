@@ -386,3 +386,36 @@ function get_short_names($cmid) {
     }
     return $short_names;
 }
+
+function coversheet_populate_data_in_user_progress_track_table($id)
+{
+    global $DB, $USER;
+    $sql = 'SELECT * FROM {coversheet_attempts} WHERE student_id = ' . $USER->id . ' AND cmid = ' . $id . ' ORDER BY id DESC Limit 1';
+    $current_progresses = $DB->get_record_sql($sql);
+    return $current_progresses;
+}
+
+function coversheet_create_new_attempt($prev_attepmt, $id)
+{
+    global $USER, $DB;
+    $prev_attepmt = $prev_attepmt ?? 0;
+
+    $sql = 'select * from {coversheet_attempts} where student_id = ' . $USER->id . ' and cmid = ' . $id . ' order by id DESC Limit 1';
+    $current_progresses = $DB->get_record_sql($sql);
+//    var_dump($current_progresses); die();
+
+    if ($current_progresses->status == 1 || empty($current_progresses)) {
+        $data = array(
+            'attempt' => intval($current_progresses->attempt) + 1 ?? 1,
+            'student_id' => $USER->id,
+            'cmid' => $id,
+            'status' => 0,
+            'timecreated' => strtotime("now"),
+        );
+        $temp = $DB->insert_record('coversheet_attempts', $data);
+
+        $current_progresses = $data['attempt'];
+        return $current_progresses;
+    }
+
+}

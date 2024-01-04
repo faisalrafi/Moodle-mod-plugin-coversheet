@@ -54,6 +54,13 @@ class edit_field_form extends moodleform {
         $mform->addElement('text', 'param', get_string('formparam', 'coversheet'));
         $mform->setType('param', PARAM_TEXT);
 
+        $requiredOptions = array(
+            0 => 'No',
+            1 => 'Yes'
+        );
+        $mform->addElement('select', 'required', get_string('formrequired', 'coversheet'), $requiredOptions);
+        $mform->setType('required', PARAM_INT);
+
         $this->add_action_buttons(get_string('formcancel', 'coversheet'), get_string('formsave', 'coversheet'));
     }
 }
@@ -77,6 +84,7 @@ else {
         $profile->name = $data->name;
         $profile->shortname = $data->shortname;
         $profile->param = $data->param;
+        $profile->required = $data->required;
         $profile->timecreated = time();
 
         $DB->update_record('coversheet_field_type', $profile);
