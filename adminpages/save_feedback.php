@@ -101,7 +101,10 @@ if ($grade_type != 0) {
     } else {
         $DB->insert_record('grade_grades', $gradeRecord);
     }
-}                
+}
+
+$params = array('cmid' => $cmid,'student_id' => $studentid, 'attempt_id' => $attempt);
+$DB->delete_records('coversheet_feedbacks', $params);
 
 $data = new stdClass();
 $data->cmid = $cmid;
@@ -116,9 +119,15 @@ $data->timecreated = time();
 
 $feedback_result = $DB->insert_record('coversheet_feedbacks', $data);
 
-//$record = $DB->get_record('coversheet_attempts', ['attempt' => $attempt, 'student_id' => $studentid]);
-//$record->feedback_submit = 1;
-//$result1 = $DB->update_record('coversheet_attempts', $record);
+$record = $DB->get_record('coversheet_attempts', ['attempt' => $attempt, 'student_id' => $studentid]);
+$record->feedback_submit = 1;
+$DB->update_record('coversheet_attempts', $record);
+
+$params = array('cmid' => $cmid, 'reqid' => $resource_id, 'student_id' => $studentid, 'attempt_id' => $attempt);
+$DB->get_record('coversheet_reqcheck', $params);
+
+$params = array('cmid' => $cmid,'student_id' => $studentid, 'attempt_id' => $attempt);
+$DB->delete_records('coversheet_reqcheck', $params);
 
 foreach ($checkedResources as $resource_id) {
 //    $sql = "UPDATE {coversheet_requirements}
@@ -130,6 +139,7 @@ foreach ($checkedResources as $resource_id) {
     $data->cmid = $cmid;
     $data->reqid = $resource_id;
     $data->student_id = $studentid;
+    $data->attempt_id = $attempt;
     $data->status = 1;
     $data->timecreated = time();
     $DB->insert_record('coversheet_reqcheck', $data);

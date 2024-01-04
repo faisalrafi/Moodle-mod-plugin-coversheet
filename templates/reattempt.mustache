@@ -17,10 +17,22 @@
         <h5>{{{attempt_text}}}</h5>
     </div>
 {{/enable}}
+{{#hasgrade}}
 <div class="d-flex">
-    <label for="grade">Grade:</label>
-    <input type="text" class="ml-2 w-25">
+    <label>Grade:</label>
+    {{#feedback_submit}}
+        <p class="ml-2 font-weight-bold">{{grade}}</p>
+    {{/feedback_submit}}
+    {{^feedback_submit}}
+        <p class="ml-2 font-weight-bold">Under Review</p>
+    {{/feedback_submit}}
 </div>
+<div class="d-flex">
+    <label>Comment:</label>
+    <p class="ml-2 font-weight-bold">{{comment}}</p>
+</div>
+{{/hasgrade}}
+<a href="{{webroot}}/mod/coversheet/adminpages/template_report.php?id={{cmid}}&studentid={{studentid}}" class=" btn btn-primary">View Coversheet</a>
 <div class="py-3">
     <h4 class="report-heading">Last attempt information</h4>
     {{#datas}}

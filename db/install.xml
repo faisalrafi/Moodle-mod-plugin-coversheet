@@ -71,7 +71,7 @@
                 <FIELD NAME="student_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Student id" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="attempt" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Attempt id" SEQUENCE="false" />
                 <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="" DEFAULT="0" SEQUENCE="false" />
-                <FIELD NAME="feedback_submit" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="Feedback submit from teacher" DEFAULT="" SEQUENCE="false" />
+                <FIELD NAME="feedback_submit" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" COMMENT="Feedback submit from teacher" DEFAULT="0" SEQUENCE="false" />
                 <FIELD NAME="declaration" TYPE="text" LENGTH="10" NOTNULL="false" COMMENT="declaration of student" SEQUENCE="false" />
                 <FIELD NAME="date" TYPE="text" LENGTH="10" NOTNULL="false" COMMENT="Date of " SEQUENCE="false" />
                 <FIELD NAME="candidate_name" LENGTH="255" TYPE="text" NOTNULL="false" COMMENT="Candidate Name" SEQUENCE="false" />

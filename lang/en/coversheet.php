@@ -88,7 +88,7 @@ $string['template_title'] = 'Enter Title of this template';
 $string['template_active'] = 'Make this template active';
 $string['templateaddruletitle'] = 'Please enter the title';
 $string['templateaddrule'] = 'Please enter the template';
-$string['template_missing'] = '<br><h4>No Active Template Found!!!<h4><br><h5>Please Activate any of your templates</h5><br>';
+$string['template_missing'] = '<br><h4>No Active Template Found!!!<h4><br><h5>Please make sure at least one template is active</h5><br>';
 
 $string['checkbox'] = 'checkbox';
 $string['textarea'] = 'textarea';

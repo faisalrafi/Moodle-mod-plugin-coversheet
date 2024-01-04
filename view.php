@@ -25,6 +25,7 @@ global $DB, $PAGE, $OUTPUT, $CFG, $USER;
 require_once('../../config.php');
 require_once('lib.php');
 require_once($CFG->libdir . '/dmllib.php');
+require_once($CFG->libdir . '/gradelib.php');
 
 $id = required_param('id', PARAM_INT);    // Course Module ID.
 
@@ -153,7 +154,11 @@ if ($hasCapabilityViewPage) {
         }
 
         $enabled = 0;
-        if ($attemptid->feedback_submit && ($attemptid->attempt < $moduleinstance->submissions)){
+        $submission = $moduleinstance->submissions;
+        if ($submission == 0) {
+            $submission = 99999;
+        }
+        if ($attemptid->feedback_submit && ($attemptid->attempt < $submission)){
             $enabled = 1;
         }
         if ($attemptid->attempt == $moduleinstance->submissions){
@@ -163,12 +168,46 @@ if ($hasCapabilityViewPage) {
             $attempt_text = 'You can\'t reattempt now, please wait for teacher\'s feedback';
         }
 
+        
+        $instance = $DB->get_record('course_modules', array('id' => $id));
+
+        $gradeitem = grade_item::fetch(array('itemtype' => 'mod',
+                        'itemmodule' => 'coversheet',
+                        'iteminstance' => $instance->instance,
+                        'itemnumber' => 0,
+                        'courseid' => $instance->course));
+        $grade_record = $DB->get_record('grade_grades', array('itemid' => $gradeitem->id, 'userid' => $USER->id));
+
+        $grade = '';
+
+        if ($grade_record) {
+            if ($grade_record->rawscaleid == NULL) {
+                $grade = $grade_record->finalgrade;
+            } else {
+                $scales = grade_scale::fetch(array('id' => $gradeitem->scaleid))->load_items();
+                $grade = $scales[$grade_record->finalgrade - 1];
+            }
+        }
+
+        $hasgrade = true;
+        if ($moduleinstance->grade == 0) {
+            $hasgrade = false;
+        }
+
+        $comment = $DB->get_record('coversheet_feedbacks', array('cmid' => $id, 'student_id' => $USER->id, 'attempt_id' => $attemptid->attempt));
+
         $display = (object)[
             'formurl' => $url,
             'prev_attempt' => $attemptid->attempt,
             'cmid' => $id,
             'datas' => array_values($datas),
             'enable' => $enabled,
+            'feedback_submit' => $attemptid->feedback_submit,
+            'hasgrade' => $hasgrade,
+            'grade' => $grade,
+            'comment' => $comment->comment,
+            'studentid' => $USER->id,
+            'webroot' => $CFG->wwwroot,
             'sname' => $sname,
             'sign' => $sign,
             'attempt_text' => $attempt_text,

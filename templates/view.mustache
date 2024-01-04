@@ -31,15 +31,18 @@
     <thead>
     <tr>
         <th class="text-center">Name</th>
-        <th class="text-center">Report</th>
+        <th class="text-center" colspan="2">Actions</th>
     </tr>
     </thead>
     <tbody>
     {{#details}}
     <tr>
         <td class="text-center">{{firstname}} {{lastname}}</td>
-        <td class="text-center">
-            <a href="{{webroot}}/mod/coversheet/adminpages/report.php?id={{cmid}}&studentid={{student_id}}" class=" btn btn-sm student-link">Report</a>
+        <td class="text-right">
+            <a href="{{webroot}}/mod/coversheet/adminpages/report.php?id={{cmid}}&studentid={{student_id}}" class=" btn btn-sm student-link">View Submission</a>
+        </td>
+        <td class="text-left">
+            <a href="{{webroot}}/mod/coversheet/adminpages/template_report.php?id={{cmid}}&studentid={{student_id}}" class=" btn btn-sm student-link">View Coversheet</a>
         </td>
     </tr>
     {{/details}}
