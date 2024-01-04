@@ -40,6 +40,8 @@ $PAGE->set_title(get_string('viewtitle', 'coversheet'));
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 $hasCapabilityViewPage = has_capability('mod/coversheet:viewpage', $context);
 
+$licenseKey = get_config('coversheet', 'license_key');
+
 //$date = $DB->get_field('coversheet_submissions' , 'submission_date', ['cmid' => $id]);
 //$updated_date = userdate($date, get_string('strftimedate'));
 //var_dump($updated_date); die();
@@ -57,7 +59,9 @@ if ($hasCapabilityViewPage) {
     $display = [
         'cmid' => $id,
         'details' => array_values($details),
-        'webroot' => $CFG->wwwroot
+        'webroot' => $CFG->wwwroot,
+        'licenseKey' => $licenseKey,
+        'courseid' => $course->id,
     ];
     echo $OUTPUT->render_from_template('mod_coversheet/view', $display);
 } else {
