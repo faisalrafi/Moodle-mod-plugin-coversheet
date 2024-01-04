@@ -48,26 +48,35 @@ foreach ($contents as $content) {
 }
 
 $attempt_sql = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid = :cmid AND ca.student_id = :studentid ORDER BY id DESC LIMIT 1";
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid AND ca.status = 1 ORDER BY id DESC LIMIT 1";
 $attempt = $DB->get_record_sql($attempt_sql, ['cmid' => $id, 'studentid' => $studentid]);
 
 $resource_query = "SELECT * FROM {coversheet_requirements} WHERE cmid = '$id'";
 $resources = $DB->get_records_sql($resource_query);
 
+$checked_resources = $DB->get_records('coversheet_reqcheck', ['cmid' => $id, 'student_id' => $studentid, 'attempt_id' => $attempt->attempt]);
+foreach ($resources as $resource) {
+    foreach ($checked_resources as $checked_resource) {
+        if ($resource->id == $checked_resource->reqid) {
+            $resource->status = 'checked';
+        } 
+    }
+}
+
 $feedback_query = "SELECT assessor_name, assessor_sign, attempt_id FROM {coversheet_feedbacks} cf 
                    WHERE cf.cmid = '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
 $feedback = $DB->get_record_sql($feedback_query);
 
-$resubmit = false;
+$save = true;
 
-if (!$feedback || ($attempt->attempt != $feedback->attempt_id)) {
-    $resubmit = true;
+if ($feedback && ($attempt->attempt == $feedback->attempt_id)) {
+    $save = false;
 }
 
 $query = "SELECT cfd.id, cft.name, cfd.value, cft.datatype FROM {coversheet_field_type} cft
           LEFT JOIN {coversheet_field_data} cfd ON cft.id = cfd.fieldid
-          WHERE cft.cmid = :cmid AND cfd.student_id = :studentid";
-$datas = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid]);
+          WHERE cft.cmid = :cmid AND cfd.student_id = :studentid AND cfd.attempt = :attempt";
+$datas = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid, 'attempt' => $attempt->attempt]);
 //echo "<pre>";var_dump($datas); die();
 foreach ($datas as $data) {
     if ($data->datatype === 'checkbox') {
@@ -120,7 +129,7 @@ $display = [
     'cmid' => $id,
     'studentid' => $studentid,
     'currentDate' => $currentdate,
-    'resubmit' => $resubmit,
+    'save' => $save,
     'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/report', $display);

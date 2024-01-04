@@ -28,7 +28,6 @@ global $OUTPUT, $DB, $PAGE, $CFG;
 
 $id = required_param("id", PARAM_INT);// Course_module ID, or.
 $studentid = required_param("studentid", PARAM_INT); // Student ID
-$templateid = required_param("templateid", PARAM_INT); // Template ID
 
 $cm = get_coursemodule_from_id('coversheet', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -36,13 +35,19 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 require_login($course, true, $cm);
 
 $context = context_module::instance($cm->id);
-$PAGE->set_url('/mod/coversheet/adminpages/template_report.php', array('id' => $id, 'studentid' => $studentid, 'templateid' => $templateid));
+$PAGE->set_url('/mod/coversheet/adminpages/template_report.php', array('id' => $id, 'studentid' => $studentid));
 $PAGE->set_title("Report");
 $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();
 
-$template = $DB->get_record('coversheet_templates', array('id' => $templateid));
+$template = $DB->get_record('coversheet_templates', array('active' => 1));
+if (!$template) {
+    echo get_string('template_missing', 'coversheet');
+    echo "<a href=$CFG->wwwroot/mod/coversheet/view.php?id=$id' class='btn btn-outline-primary'>Back</a>";
+    echo $OUTPUT->footer();
+    die;
+}
 
 $user = $DB->get_record('user', array('id' => $studentid));
 
@@ -57,14 +62,14 @@ foreach ($custom_values as $custom_value) {
 }
 
 $feedback_query = "SELECT assessor_name, assessor_sign FROM {coversheet_feedbacks} cf 
-                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid'";
+                   WHERE cf.cmid= '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
 $feedback = $DB->get_record_sql($feedback_query);
 
 $user->teacher_name = $feedback->assessor_name;
 $user->teacher_signature = $feedback->assessor_sign;
 
 $sql = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid = :cmid AND ca.student_id = :studentid";
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid ORDER BY id DESC LIMIT 1";
 $details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
 
 $user->student_name = $details->candidate_name;
@@ -104,11 +109,11 @@ $display = [
     'webroot' => $CFG->wwwroot
 ];
 echo $OUTPUT->render_from_template('mod_coversheet/template_report', $display);
-echo "<div id='printableArea'>";
+echo "<div id='printableArea' class='mb-5'>";
 echo $inputString;
 echo "</div>";
 echo '<button class="btn btn-primary mr-2" onclick="printdiv(\'printableArea\')">Print this page</button>';
-echo '<a href="'. $CFG->wwwroot .'/mod/coversheet/adminpages/view_template.php?id=' . $id .'" class="btn btn-danger">Back</a>';
+echo '<a href="'. $CFG->wwwroot .'/mod/coversheet/view.php?id=' . $id .'" class="btn btn-danger">Back</a>';
 echo "<script>
 function printdiv(elem) {
   var header_str = '<html><head><title>' + document.title  + '</title></head><body>';

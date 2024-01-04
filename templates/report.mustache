@@ -32,7 +32,7 @@ Back
         {{#resources}}
             <li class="list-design">
                 <label for="resource">{{resource}}</label>
-                <input type="checkbox" id="resource-check" class="resource-checkbox ml-5" data-resource="{{resource}}" data-id="{{id}}">
+                <input type="checkbox" id="resource-check" class="resource-checkbox ml-5" data-resource="{{resource}}" data-id="{{id}}" {{status}}>
             </li>
         {{/resources}}
     </ul>
@@ -76,7 +76,6 @@ Back
     <hr>
     <h3 class="report-heading">Conclusion</h3>
     <div class="d-flex justify-content-between">
-        {{#resubmit}}
         <div class="mt-2">
             <label for="nameInput" class="">Enter Your Name:</label>
             <input type="text" id="teacher_name" name="teacher_name" class="w-25 mb-2" />
@@ -91,20 +90,17 @@ Back
                     <button type="button" id="clear"><span> Clear </span></button>
                 </div>
                 <div class="save-btn">
-                    <button type="button" id="save"><span> Save </span></button>
+                    <button type="button" id="save"><span>
+                    {{#save}}
+                        Save
+                    {{/save}}
+                    {{^save}}
+                        Update Review
+                    {{/save}}
+                    </span></button>
                 </div>
             </div>
         </div>
-        {{/resubmit}}
-        {{^resubmit}}
-            {{#feedback}}
-                <div class="mt-2">
-                    <h6 class="conclusion-heading">Teacher's Name:</h6><p class="bold">{{assessor_name}}</p>
-                    <h6 class="conclusion-heading">Teacher's Signature:</h6>
-                    <img src="{{assessor_sign}}" alt="teacher_sign" height="200px" width="500px" class="conclusion-image">
-                </div>
-            {{/feedback}}
-        {{/resubmit}}
         {{#attempt}}
         <div class="mt-2">
             <h6 class="conclusion-heading">Student's Name:</h6><p class="bold">{{candidate_name}}</p>
