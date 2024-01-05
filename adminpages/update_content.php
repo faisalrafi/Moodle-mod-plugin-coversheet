@@ -84,7 +84,7 @@ if ($action === 'delete'){
 echo $OUTPUT->header();
 if ($contentid) {
     $content = coversheet_get_html_data("coversheet_contents", $contentid);
-
+    $content->htmlformat = 1;
     $formData = file_prepare_standard_editor($content, 'html', coversheet_editor_options($context), $context, 'mod_coversheet', 'html_editor', $content->id);
     $mform->set_data($formData);
 }
