@@ -118,7 +118,7 @@ function coversheet_insert_template($data, $context, $id)
     $template->id = $DB->insert_record('coversheet_templates', $template);
 
     if ($template->active == 1) {
-        make_inactive_template($template->id);
+        make_inactive_template($id, $template->id);
     }
 
     if (!empty($data->template_editor)) {
@@ -191,7 +191,7 @@ function coversheet_prepare_html_data_for_view($data, $context)
 
 function mod_coversheet_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = array())
 {
-    if (in_array($filearea, ["html_editor"])) {
+    if (in_array($filearea, ["html_editor"]) || in_array($filearea, ["template_editor"])) {
         $itemid = $args[0];
         $filename = array_pop($args);
         $filepath = '/';
@@ -345,11 +345,13 @@ function coversheet_get_user_grades($coversheet, $userid = 0)
     return $items;
 }
 
-function make_inactive_template($id) {
+function make_inactive_template($cmid, $id) {
     global $DB;
     $sql = "UPDATE `mdl_coversheet_templates` 
             SET `active` = '0' 
-            WHERE {coversheet_templates}.id != :id";
+            WHERE {coversheet_templates}.id != :id
+            AND {coversheet_templates}.cmid = :cmid";
+    $params['cmid'] = $cmid;
     $params['id'] = $id;
     $DB->execute($sql, $params);
 }
@@ -398,8 +400,12 @@ function coversheet_create_new_attempt($prev_attepmt, $id)
 //    var_dump($current_progresses); die();
 
     if ($current_progresses->status == 1 || empty($current_progresses)) {
+        $attempt_no = 0;
+        if (!empty($current_progresses)) {
+            $attempt_no = intval($current_progresses->attempt);
+        }
         $data = array(
-            'attempt' => intval($current_progresses->attempt) + 1 ?? 1,
+            'attempt' => intval($attempt_no) + 1 ?? 1,
             'student_id' => $USER->id,
             'cmid' => $id,
             'status' => 0,

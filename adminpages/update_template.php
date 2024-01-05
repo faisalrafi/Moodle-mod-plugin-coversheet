@@ -90,7 +90,7 @@ if ($mform->is_cancelled()) {
         $template->active = 0;
     } else {
         $template->active = $data->active;
-        make_inactive_template($template->id);
+        make_inactive_template($id, $template->id);
     }
     $template->timemodified = time();
 
