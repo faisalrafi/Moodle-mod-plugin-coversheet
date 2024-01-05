@@ -41,7 +41,7 @@ $PAGE->requires->css('/mod/coversheet/mod_coversheet_style.css');
 
 echo $OUTPUT->header();
 
-$template = $DB->get_record('coversheet_templates', array('active' => 1));
+$template = $DB->get_record('coversheet_templates', array('cmid' => $id, 'active' => 1));
 if (!$template) {
     echo get_string('template_missing', 'coversheet');
     echo "<a href=$CFG->wwwroot/mod/coversheet/view.php?id=$id' class='btn btn-outline-primary'>Back</a>";
@@ -51,10 +51,17 @@ if (!$template) {
 
 $user = $DB->get_record('user', array('id' => $studentid));
 
+$sql = "SELECT * FROM {coversheet_attempts} ca
+             WHERE ca.cmid = :cmid AND ca.student_id = :studentid AND ca.status = 1 ORDER BY id DESC LIMIT 1";
+$details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
+
+$user->student_name = $details->candidate_name;
+$user->student_signature = $details->candidate_sign;
+
 $query = "SELECT cft.shortname, cfd.value, cft.datatype FROM {coversheet_field_type} cft
           LEFT JOIN {coversheet_field_data} cfd ON cft.id = cfd.fieldid
-          WHERE cft.cmid = :cmid AND cfd.student_id = :studentid";
-$custom_values = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid]);
+          WHERE cft.cmid = :cmid AND cfd.student_id = :studentid AND cfd.attempt = :attempt";
+$custom_values = $DB->get_records_sql($query, ['cmid' => $id, 'studentid' => $studentid, 'attempt' => $details->attempt]);
 
 foreach ($custom_values as $custom_value) {
     $key = $custom_value->shortname;
@@ -65,16 +72,11 @@ $feedback_query = "SELECT assessor_name, assessor_sign FROM {coversheet_feedback
                    WHERE cf.cmid= '$id' AND cf.student_id = '$studentid' ORDER BY id DESC LIMIT 1";
 $feedback = $DB->get_record_sql($feedback_query);
 
-$user->teacher_name = $feedback->assessor_name;
-$user->teacher_signature = $feedback->assessor_sign;
-
-$sql = "SELECT * FROM {coversheet_attempts} ca
-             WHERE ca.cmid = :cmid AND ca.student_id = :studentid ORDER BY id DESC LIMIT 1";
-$details = $DB->get_record_sql($sql, ['cmid' => $id, 'studentid' => $studentid]);
-
-$user->student_name = $details->candidate_name;
-$user->student_signature = $details->candidate_sign;
-
+if ($feedback) {
+    $user->teacher_name = $feedback->assessor_name;
+    $user->teacher_signature = $feedback->assessor_sign;
+}
+$template->template = file_rewrite_pluginfile_urls($template->template, 'pluginfile.php', $context->id, 'mod_coversheet', 'template_editor', $template->id);
 $inputString = $template->template;
 
 $pattern = "/\[(.*?)\]/";
@@ -84,24 +86,14 @@ preg_match_all($pattern, $inputString, $matches);
 $extractedValues = $matches[1];
 
 foreach ($extractedValues as $index => $value) {
+    $replace_value = '';
     if ($value == "student_signature" || $value == "teacher_signature") {
         $replace_value = '<img src="' . $user->$value . '" alt="signature" height="200px" width="500px" class="conclusion-image">';
-        $inputString = str_replace("[" . $value . "]", $replace_value, $inputString);
-    } else {
-        $inputString = str_replace("[" . $value . "]", $user->$value, $inputString);
+    } else if (isset($user->$value)) {
+        $replace_value = $user->$value; 
     }
+    $inputString = str_replace("[" . $value . "]", $replace_value, $inputString);
 }
-
-$query = "SELECT cc.id as contentid, cc.html FROM {coversheet_contents} cc 
-          WHERE cc.cmid = :cmid";
-$contents = $DB->get_records_sql($query, ['cmid' => $id]);
-
-foreach ($contents as $content) {
-    $html = coversheet_prepare_html_data_for_view($content, $context);
-}
-
-$resource_query = "SELECT * FROM {coversheet_requirements} WHERE cmid = '$id'";
-$resources = $DB->get_records_sql($resource_query);
 
 $display = [
     'cmid' => $id,

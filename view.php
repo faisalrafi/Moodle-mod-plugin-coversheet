@@ -199,6 +199,11 @@ if ($hasCapabilityViewPage) {
         }
 
         $comment = $DB->get_record('coversheet_feedbacks', array('cmid' => $id, 'student_id' => $USER->id, 'attempt_id' => $attemptid->attempt));
+        if ($comment) {
+            $comment = $comment->comment;
+        } else {
+            $comment = 'N/A';
+        }
 
         $display = (object)[
             'formurl' => $url,
@@ -209,7 +214,7 @@ if ($hasCapabilityViewPage) {
             'feedback_submit' => $attemptid->feedback_submit,
             'hasgrade' => $hasgrade,
             'grade' => $grade,
-            'comment' => $comment->comment,
+            'comment' => $comment,
             'studentid' => $USER->id,
             'webroot' => $CFG->wwwroot,
             'sname' => $sname,

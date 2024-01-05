@@ -123,9 +123,6 @@ $record = $DB->get_record('coversheet_attempts', ['attempt' => $attempt, 'studen
 $record->feedback_submit = 1;
 $DB->update_record('coversheet_attempts', $record);
 
-$params = array('cmid' => $cmid, 'reqid' => $resource_id, 'student_id' => $studentid, 'attempt_id' => $attempt);
-$DB->get_record('coversheet_reqcheck', $params);
-
 $params = array('cmid' => $cmid,'student_id' => $studentid, 'attempt_id' => $attempt);
 $DB->delete_records('coversheet_reqcheck', $params);
 
