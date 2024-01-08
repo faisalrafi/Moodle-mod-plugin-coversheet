@@ -39,7 +39,7 @@ $PAGE->set_title(get_string('addresourcetitle', 'coversheet'));
 $form = new add_resource_form(new moodle_url('/mod/coversheet/adminpages/add_resource.php', array('id' => $cmid)));
 
 if ($form->is_cancelled()) {
-    redirect(new moodle_url('/mod/coversheet/resource_list.php', array('id' => $cmid)));
+    redirect(new moodle_url('/mod/coversheet/adminpages/resource_list.php', array('id' => $cmid)));
 } elseif ($data = $form->get_data()) {
     $record = new stdClass();
     $record->cmid = $cmid;

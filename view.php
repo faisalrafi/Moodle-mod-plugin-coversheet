@@ -77,6 +77,10 @@ if ($hasCapabilityViewPage) {
     }
 
     $attemptnumber = $attemptid->attempt;
+    $submissions = $moduleinstance->submissions;
+    if ($submissions == 0) {
+        $submissions = 99999;
+    }
 
     if ($attemptid->status == 0 || (empty($attemptid) && $attemptid->feedback_submit != 0)){
         echo $OUTPUT->header();
@@ -120,7 +124,6 @@ if ($hasCapabilityViewPage) {
         $results = $DB->get_records_sql($sql1);
 //    echo "<pre>"; var_dump($results); die();
 
-        $submissions = $moduleinstance->submissions;
         $currentdate = date('d F Y');
 
         $display = [
@@ -158,14 +161,11 @@ if ($hasCapabilityViewPage) {
         }
 
         $enabled = 0;
-        $submission = $moduleinstance->submissions;
-        if ($submission == 0) {
-            $submission = 99999;
-        }
-        if ($attemptid->feedback_submit && ($attemptid->attempt < $submission)){
+        
+        if ($attemptid->feedback_submit && ($attemptid->attempt < $submissions)){
             $enabled = 1;
         }
-        if ($attemptid->attempt == $moduleinstance->submissions){
+        if ($attemptid->attempt >= $submissions){
             $attempt_text = 'You reached your maximum submission limit';
         }
         else{

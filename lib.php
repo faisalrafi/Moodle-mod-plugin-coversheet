@@ -55,7 +55,8 @@ function coversheet_update_instance(stdClass $data, mod_coversheet_mod_form $mfo
     $table->name = $data->name;
     $table->intro = $data->intro;
     $table->introformat = $data->introformat;
-    $table->grade = $data->grade;    
+    $table->grade = $data->grade;  
+    $table->submissions = $data->submissions;  
     $table->timecreated = time();
     $table->timemodified = time();
     $table->id = $DB->update_record('coversheet', $table);
